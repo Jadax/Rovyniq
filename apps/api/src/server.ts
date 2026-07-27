@@ -5,6 +5,8 @@ import { browserCookies, browserOidcConfigFromEnvironment, createAuthorizationRe
 import { ingestionRuntimeFromEnvironment } from "./ingestion-runtime.ts";
 import { readBoundedPdf } from "./upload.ts";
 import type { DocumentType } from "../../../packages/canonical-tax-model/src/index.ts";
+import { PostgresDocumentPersistence, PostgresTenantDatabase, postgresConfigFromEnvironment } from "./postgres.ts";
+import { requirePermission } from "../../../packages/authz/src/index.ts";
 
 const port = Number(process.env.PORT ?? 3001);
 const json = (response: import("node:http").ServerResponse, body: object, status = 200, headers: Record<string, string> = {}) => {
@@ -55,6 +57,22 @@ const server = createServer((request, response) => {
       if (!configuration) return json(response, { error: "identity_not_configured" }, 503);
       void readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret).then((principal) => json(response, { subject: principal.subject, roles: principal.roles })).catch(() => json(response, { error: "unauthenticated" }, 401));
     } catch { json(response, { error: "identity_not_configured" }, 503); }
+    return;
+  }
+
+  const documentsMatch = request.method === "GET" && /^\/v1\/workspaces\/([0-9a-f-]{36})\/documents$/.exec(url.pathname);
+  if (documentsMatch) {
+    void (async () => { try {
+      const configuration = browserConfiguration(), database = postgresConfigFromEnvironment(process.env);
+      if (!configuration || !database) return json(response, { error: "workspace_not_configured" }, 503);
+      const principal = await readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret);
+      if (!principal.organisationId) return json(response, { error: "forbidden" }, 403);
+      requirePermission(principal, "workspace:read");
+      const persistence = new PostgresDocumentPersistence(new PostgresTenantDatabase(database));
+      const owner = await persistence.taxpayerSubject(principal.organisationId, documentsMatch[1]!);
+      if (!owner || (principal.roles.includes("taxpayer") && owner !== principal.subject)) return json(response, { error: "forbidden" }, 403);
+      json(response, { documents: await persistence.listDocuments(principal.organisationId, documentsMatch[1]!) });
+    } catch { json(response, { error: "workspace_unavailable" }, 401); } })();
     return;
   }
 

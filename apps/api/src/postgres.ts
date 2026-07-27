@@ -43,6 +43,9 @@ export class PostgresDocumentPersistence implements DocumentPersistence, Workspa
   async findByIdempotencyKey(tenantId: string, workspaceId: string, idempotencyKey: string): Promise<DocumentRecord | null> {
     return this.database.withTenant(tenantId, async (sql) => { const row = (await sql.query<DocumentRow>("select id, tenant_id, workspace_id, object_key, sha256, mime_type, state, document_type, original_filename, byte_length, idempotency_key from documents where workspace_id = $1 and idempotency_key = $2", [workspaceId, idempotencyKey])).rows[0]; return row ? recordFromRow(row) : null; });
   }
+  async listDocuments(tenantId: string, workspaceId: string): Promise<readonly { id: string; documentType: string; filename: string; state: string; scannedAt?: string }[]> {
+    return this.database.withTenant(tenantId, async (sql) => (await sql.query<{ id: string; document_type: string; original_filename: string; state: string; scanned_at?: string }>("select id, document_type, original_filename, state, scanned_at from documents where workspace_id = $1 order by created_at desc", [workspaceId])).rows.map((row) => ({ id: row.id, documentType: row.document_type, filename: row.original_filename, state: row.state, scannedAt: row.scanned_at })));
+  }
   async saveQuarantined(input: { record: DocumentRecord; audit: AuditEvent }): Promise<void> {
     await this.database.withTenant(input.record.tenantId, async (sql) => {
       await sql.query("insert into documents (id, tenant_id, workspace_id, object_key, sha256, mime_type, state, document_type, original_filename, byte_length, idempotency_key) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)", [input.record.id, input.record.tenantId, input.record.workspaceId, input.record.objectKey, input.record.sha256, input.record.contentType, input.record.state, input.record.documentType, input.record.filename, input.record.byteLength, input.record.idempotencyKey]);

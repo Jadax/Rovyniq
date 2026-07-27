@@ -14,7 +14,7 @@ Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with
 
 1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and isolated scanner, then connect the protected upload route and add document-list/live return-breakdown API routes; replace the synthetic workspace data only after those controls pass.
+3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and isolated scanner, then connect the protected upload/document-list routes and add the live deterministic return-breakdown route; replace the synthetic workspace data only after those controls pass.
 
 ## Decisions and risks
 
