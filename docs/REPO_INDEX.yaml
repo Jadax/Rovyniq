@@ -35,4 +35,9 @@ domains:
     interfaces: [Manual statement upload, future official provider adapter]
     tests: []
     adrs: [ADR-0004]
+  brand_and_assets:
+    authoritative_files: [docs/compliance/ASSET_AND_BRAND_PROVENANCE.md, apps/web/styles.css, apps/web/workspace.css]
+    interfaces: [Original CSS visual system]
+    tests: []
+    adrs: []
 known_debt: [OIDC/JWKS validation adapter, migration runner, secure document ingestion, production deployment]

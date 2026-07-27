@@ -4,6 +4,8 @@
 
 Phase 0 research register, SARS integration finding, compliance/security boundaries, architecture records, source-checked 2026 employment tax configuration, synthetic IRP5 reconciliation, Rovyniq/Astraiva branding, free self-hosted Phase 1 configuration, and a no-Docker GitHub Pages/Cloudflare Workers synthetic-preview path. The public preview has a responsive landing page plus a mobile-first, synthetic-data workspace preview with tax breakdown, review state and activity history; uploads and auto-filing remain explicitly disabled.
 
+The published preview now uses an original CSS-only visual system with no remote fonts, third-party images, icon libraries or competitor assets. See `docs/compliance/ASSET_AND_BRAND_PROVENANCE.md` before introducing any visual asset.
+
 ## In progress
 
 Phase 1 foundation. Database adapter/migration runner, OIDC/JWKS validation, encrypted object storage adapter, malware scanning and interactive web UI are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
