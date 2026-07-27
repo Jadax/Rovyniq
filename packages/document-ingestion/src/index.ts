@@ -18,10 +18,14 @@ export function validateUploadCandidate(candidate: UploadCandidate): UploadFailu
   return null;
 }
 
+export function createQuarantinedDocument(input: UploadCandidate & { documentType: DocumentType; documentId: string }): QuarantinedDocument {
+  return { id: input.documentId, documentType: input.documentType, state: "QUARANTINED", sha256: createHash("sha256").update(input.bytes).digest("hex"), contentType: "application/pdf", filename: safeFilename(input.filename), byteLength: input.bytes.byteLength };
+}
+
 export async function quarantineAndScan(input: UploadCandidate & { documentType: DocumentType; documentId: string }, scanner: MalwareScanner): Promise<IngestionOutcome> {
   const failure = validateUploadCandidate(input);
   if (failure) return { accepted: false, failure };
-  const document: QuarantinedDocument = { id: input.documentId, documentType: input.documentType, state: "QUARANTINED", sha256: createHash("sha256").update(input.bytes).digest("hex"), contentType: "application/pdf", filename: safeFilename(input.filename), byteLength: input.bytes.byteLength };
+  const document = createQuarantinedDocument(input);
   const scan = await scanner.scan({ documentId: document.id, sha256: document.sha256, bytes: input.bytes });
   if (scan.verdict === "unavailable") return { accepted: false, failure: "scanner_unavailable", document, scan };
   if (scan.verdict === "malicious") return { accepted: false, failure: "malware_detected", document, scan };

@@ -31,9 +31,9 @@ domains:
     tests: [packages/audit/src/index.test.ts]
     adrs: [ADR-0003]
   document_ingestion:
-    authoritative_files: [packages/document-ingestion/src/index.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
-    interfaces: [validateUploadCandidate, quarantineAndScan, MalwareScanner, Quarantine object key]
-    tests: [packages/document-ingestion/src/index.test.ts]
+    authoritative_files: [packages/document-ingestion/src/index.ts, packages/document-ingestion/src/service.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
+    interfaces: [validateUploadCandidate, quarantineAndScan, DocumentIngestionService, MalwareScanner, Quarantine object key]
+    tests: [packages/document-ingestion/src/index.test.ts, packages/document-ingestion/src/service.test.ts]
     adrs: [ADR-0003]
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]

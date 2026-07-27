@@ -6,6 +6,8 @@
 
 The scanner is a required port. A malicious verdict or an unavailable scanner is a hard failure. A clean verdict does not classify or extract information; it only allows a future trusted worker to perform the next state transition.
 
+`DocumentIngestionService` adds the server-side orchestration boundary. It requires a verified principal whose organisation matches the tenant, checks the taxpayer workspace owner, applies document-upload permission, enforces a strong idempotency key, writes the immutable quarantine object, and persists a `document.quarantined` audit event. The scan worker reads only the quarantine object and records `VALIDATED` for a clean result or `ARCHIVED` for a malicious result while retaining the original for evidence and investigation.
+
 ## Required production sequence
 
 1. Authenticate and authorise the workspace owner or permitted contributor server-side.
@@ -17,4 +19,4 @@ The scanner is a required port. A malicious verdict or an unavailable scanner is
 
 ## Release gate
 
-The API intentionally exposes no upload route yet. Enable one only after encrypted object storage, a transaction-capable database adapter, a malware-scanning implementation, rate limits, idempotency handling, retention/deletion policy, audit persistence, security review and production data-hosting approval are complete.
+The API intentionally exposes no upload route yet. Enable one only after encrypted object storage, a transaction-capable database adapter, a malware-scanning implementation, rate limits, retention/deletion policy, security review and production data-hosting approval are complete.
