@@ -40,6 +40,11 @@ domains:
     interfaces: [EncryptedS3ObjectStorage, ObjectStorage, readImmutable]
     tests: [apps/api/src/encrypted-storage.test.ts]
     adrs: [ADR-0003]
+  malware_scanning:
+    authoritative_files: [apps/api/src/clamav-scanner.ts, apps/api/src/scan-worker.ts, docs/security/MALWARE_SCANNING.md]
+    interfaces: [ClamAvDaemonScanner, runDocumentScanJob, INSTREAM protocol]
+    tests: [apps/api/src/clamav-scanner.test.ts, apps/api/src/scan-worker.test.ts]
+    adrs: [ADR-0003]
   document_ingestion:
     authoritative_files: [packages/document-ingestion/src/index.ts, packages/document-ingestion/src/service.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
     interfaces: [validateUploadCandidate, quarantineAndScan, DocumentIngestionService, MalwareScanner, Quarantine object key]
@@ -60,4 +65,4 @@ domains:
     interfaces: [Original CSS visual system]
     tests: []
     adrs: []
-known_debt: [production OIDC configuration, storage/scanner activation, production deployment]
+known_debt: [production OIDC and storage/scanner activation, authenticated document UI, production deployment]
