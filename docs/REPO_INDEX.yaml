@@ -35,6 +35,11 @@ domains:
     interfaces: [PostgresTenantDatabase, PostgresDocumentPersistence, runMigrations]
     tests: [apps/api/src/postgres.test.ts, apps/api/src/migrations.test.ts]
     adrs: [ADR-0003]
+  encrypted_object_storage:
+    authoritative_files: [apps/api/src/encrypted-storage.ts, packages/storage/src/index.ts, docs/security/ENCRYPTED_OBJECT_STORAGE.md]
+    interfaces: [EncryptedS3ObjectStorage, ObjectStorage, readImmutable]
+    tests: [apps/api/src/encrypted-storage.test.ts]
+    adrs: [ADR-0003]
   document_ingestion:
     authoritative_files: [packages/document-ingestion/src/index.ts, packages/document-ingestion/src/service.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
     interfaces: [validateUploadCandidate, quarantineAndScan, DocumentIngestionService, MalwareScanner, Quarantine object key]
@@ -55,4 +60,4 @@ domains:
     interfaces: [Original CSS visual system]
     tests: []
     adrs: []
-known_debt: [production OIDC configuration, ingestion adapters and migration runner, production deployment]
+known_debt: [production OIDC configuration, storage/scanner activation, production deployment]

@@ -8,13 +8,13 @@ The published preview now uses an original CSS-only visual system with no remote
 
 ## In progress
 
-Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. The document-ingestion service validates bounded PDFs, checks tenant/workspace ownership, supports idempotency, writes an immutable quarantine object through a port, creates audit events and fails closed without a clean malware verdict; no document route is enabled. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. Encrypted object storage adapter, malware-scanning implementation and authenticated return workspace are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
+Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. The document-ingestion service validates bounded PDFs, checks tenant/workspace ownership, supports idempotency, writes an immutable quarantine object through a port, creates audit events and fails closed without a clean malware verdict; no document route is enabled. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. Malware-scanning implementation and authenticated return workspace are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
 
 ## Next three tasks
 
 1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, then implement encrypted storage/scanner adapters and authenticated document review UI; replace the synthetic workspace data only after those controls pass.
+3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and implement an isolated scanner plus authenticated document review UI; replace the synthetic workspace data only after those controls pass.
 
 ## Decisions and risks
 
@@ -22,7 +22,7 @@ The return is ITR12. No public documented ITR12 submission API was found in the 
 
 ## Commands last run
 
-`node --experimental-strip-types --input-type=module -e "…edge API contract…"` — passed (health 200; upload fails closed with 503). `npm.cmd run test:all` — passed: compliance checks plus 22 tests, 0 failures (2026-07-27). Docker was checked and is not installed.
+`node --experimental-strip-types --input-type=module -e "…edge API contract…"` — passed (health 200; upload fails closed with 503). `npm.cmd run test:all` — passed: compliance checks plus 24 tests, 0 failures (2026-07-27). Docker was checked and is not installed.
 
 ## Repository
 
