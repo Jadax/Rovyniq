@@ -1,0 +1,3 @@
+openapi: 3.1.0
+info: { title: Umoya Tax API, version: 0.1.0, description: Foundation contract; no live SARS endpoints. }
+paths: {}

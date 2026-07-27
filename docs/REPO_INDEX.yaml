@@ -1,0 +1,33 @@
+updated: 2026-07-27
+domains:
+  canonical-model:
+    authoritative_files: [packages/canonical-tax-model/src/index.ts]
+    interfaces: [EvidenceReference, ExtractedField, EmploymentCertificate, ReturnWorkspace]
+    tests: []
+    adrs: [ADR-0001]
+  tax-rules:
+    authoritative_files: [packages/tax-rules/src/2026.ts]
+    interfaces: [taxYear2026]
+    tests: [packages/tax-rules/src/2026.test.ts]
+    adrs: [ADR-0002]
+  tax-engine:
+    authoritative_files: [packages/tax-engine/src/index.ts]
+    interfaces: [calculateEmploymentEstimate, reconcileEmploymentCertificates]
+    tests: [packages/tax-engine/src/index.test.ts]
+    adrs: [ADR-0002]
+  authz:
+    authoritative_files: [packages/authz/src/index.ts]
+    interfaces: [Principal, can, requirePermission]
+    tests: [packages/authz/src/index.test.ts]
+    adrs: [ADR-0003]
+  audit:
+    authoritative_files: [packages/audit/src/index.ts, infra/postgres/migrations/0001_foundation.sql]
+    interfaces: [AuditEvent, OutboxEvent]
+    tests: [packages/audit/src/index.test.ts]
+    adrs: [ADR-0003]
+  edge-api:
+    authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
+    interfaces: [Worker.fetch]
+    tests: []
+    adrs: [ADR-0003]
+known_debt: [OIDC/JWKS validation adapter, migration runner, secure document ingestion, production deployment]

@@ -1,0 +1,3 @@
+# Tax-practitioner boundary
+
+Private self-filing mode prepares the taxpayer’s own ITR12 and must say it is not tax advice. Before paid public filing, return preparation or advice for another person, obtain legal review of Tax Administration Act requirements, SARS practitioner registration, recognised controlling body status, engagement/authority, practitioner-number validation and reviewer sign-off. SARS states that a natural person who provides tax advice or completes/assists with another person’s return must register with both SARS and a Recognised Controlling Body, subject to listed exemptions. [SARS registration guidance](https://www.sars.gov.za/tax-practitioners/register-as-a-tax-practitioner/)

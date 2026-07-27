@@ -1,0 +1,23 @@
+# Current state — 2026-07-27
+
+## Completed
+
+Phase 0 research register, SARS integration finding, compliance/security boundaries, architecture records, source-checked 2026 employment tax configuration, synthetic IRP5 reconciliation, Rovyniq/Astraiva branding, free self-hosted Phase 1 configuration, and a no-Docker GitHub Pages/Cloudflare Workers synthetic-preview path. The preview website explicitly disables uploads and auto-filing.
+
+## In progress
+
+Phase 1 foundation. Database adapter/migration runner, OIDC/JWKS validation, encrypted object storage adapter, malware scanning and interactive web UI are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
+
+## Next three tasks
+
+1. Push to `Jadax/Rovyniq`, enable GitHub Pages with GitHub Actions, and deploy the synthetic preview (`apps/web`).
+2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
+3. Add a maintained OIDC/JWKS validator, secure persistence/ingestion, and document review UI.
+
+## Decisions and risks
+
+The return is ITR12. No public documented ITR12 submission API was found in the official research recorded below. Use manual eFiling handoff unless an authorised provider channel is documented and approved. Tax rules require practitioner verification before filing.
+
+## Commands last run
+
+`node --experimental-strip-types --input-type=module -e "…edge API contract…"` — passed (health 200; upload fails closed with 503). `npm.cmd run test:all` — passed: compliance checks plus 7 tests, 0 failures (2026-07-27). Docker was checked and is not installed.
