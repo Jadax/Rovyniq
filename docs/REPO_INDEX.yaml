@@ -30,6 +30,11 @@ domains:
     interfaces: [AuditEvent, OutboxEvent]
     tests: [packages/audit/src/index.test.ts]
     adrs: [ADR-0003]
+  document_ingestion:
+    authoritative_files: [packages/document-ingestion/src/index.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
+    interfaces: [validateUploadCandidate, quarantineAndScan, MalwareScanner, Quarantine object key]
+    tests: [packages/document-ingestion/src/index.test.ts]
+    adrs: [ADR-0003]
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]
@@ -45,4 +50,4 @@ domains:
     interfaces: [Original CSS visual system]
     tests: []
     adrs: []
-known_debt: [production OIDC configuration, migration runner, secure document ingestion, production deployment]
+known_debt: [production OIDC configuration, ingestion adapters and migration runner, production deployment]

@@ -1,3 +1,4 @@
 export interface ObjectStorage { putImmutable(input: { key: string; bytes: Uint8Array; contentType: string; sha256: string }): Promise<void>; createReadUrl(input: { key: string; expiresInSeconds: number }): Promise<string>; exists(key: string): Promise<boolean>; }
+export function quarantineDocumentKey(tenantId: string, documentId: string): string { return `tenants/${tenantId}/documents/${documentId}/quarantine/original`; }
 export function originalDocumentKey(tenantId: string, documentId: string): string { return `tenants/${tenantId}/documents/${documentId}/original`; }
 export function derivativeDocumentKey(tenantId: string, documentId: string, derivativeId: string): string { return `tenants/${tenantId}/documents/${documentId}/derivatives/${derivativeId}`; }

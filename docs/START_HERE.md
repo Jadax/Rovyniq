@@ -2,7 +2,7 @@
 
 ## Current state
 
-Rovyniq, created with heart by Tushant Sharma at Astraiva, is a Phase 0/early Phase 1 foundation. It has a canonical evidence model, tax-year registry, deterministic employment tax estimate, IRP5 reconciliation, submission-provider port, synthetic fixtures, executable tests, an original static preview and fail-closed OIDC browser-sign-in plumbing. It does not persist data, accept uploads, expose an authenticated workspace, or submit to SARS.
+Rovyniq, created with heart by Tushant Sharma at Astraiva, is a Phase 0/early Phase 1 foundation. It has a canonical evidence model, tax-year registry, deterministic employment tax estimate, IRP5 reconciliation, submission-provider port, synthetic fixtures, executable tests, an original static preview, fail-closed OIDC browser-sign-in plumbing, and a quarantined-document policy. It does not persist data, accept uploads, expose an authenticated workspace, or submit to SARS.
 
 ## Architecture map
 
