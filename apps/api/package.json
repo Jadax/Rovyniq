@@ -1,1 +1,1 @@
-{"name":"@rovyniq/api","private":true,"type":"module"}
+{"name":"@rovyniq/api","private":true,"type":"module","dependencies":{"jose":"^6.2.4"}}
