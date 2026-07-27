@@ -2,7 +2,7 @@
 
 ## Completed
 
-Phase 0 research register, SARS integration finding, compliance/security boundaries, architecture records, source-checked 2026 employment tax configuration, synthetic IRP5 reconciliation, Rovyniq/Astraiva branding, free self-hosted Phase 1 configuration, and a no-Docker GitHub Pages/Cloudflare Workers synthetic-preview path. The public preview has a responsive, accessibility-conscious Rovyniq landing page with an illustrative tax-breakdown surface and explicitly disables uploads and auto-filing.
+Phase 0 research register, SARS integration finding, compliance/security boundaries, architecture records, source-checked 2026 employment tax configuration, synthetic IRP5 reconciliation, Rovyniq/Astraiva branding, free self-hosted Phase 1 configuration, and a no-Docker GitHub Pages/Cloudflare Workers synthetic-preview path. The public preview has a responsive landing page plus a mobile-first, synthetic-data workspace preview with tax breakdown, review state and activity history; uploads and auto-filing remain explicitly disabled.
 
 ## In progress
 
@@ -12,7 +12,7 @@ Phase 1 foundation. Database adapter/migration runner, OIDC/JWKS validation, enc
 
 1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Add a maintained OIDC/JWKS validator, secure persistence/ingestion, and authenticated document review UI.
+3. Add a maintained OIDC/JWKS validator, secure persistence/ingestion, and authenticated document review UI; then replace the synthetic workspace data.
 
 ## Decisions and risks
 
