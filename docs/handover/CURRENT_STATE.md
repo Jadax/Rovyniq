@@ -10,7 +10,7 @@ Phase 1 foundation. Database adapter/migration runner, OIDC/JWKS validation, enc
 
 ## Next three tasks
 
-1. Push to `Jadax/Rovyniq`, enable GitHub Pages with GitHub Actions, and deploy the synthetic preview (`apps/web`).
+1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
 3. Add a maintained OIDC/JWKS validator, secure persistence/ingestion, and document review UI.
 
@@ -21,3 +21,7 @@ The return is ITR12. No public documented ITR12 submission API was found in the 
 ## Commands last run
 
 `node --experimental-strip-types --input-type=module -e "…edge API contract…"` — passed (health 200; upload fails closed with 503). `npm.cmd run test:all` — passed: compliance checks plus 7 tests, 0 failures (2026-07-27). Docker was checked and is not installed.
+
+## Repository
+
+Initial foundation commit `3b1fa71` was pushed to `https://github.com/Jadax/Rovyniq` on branch `main` (2026-07-27). GitHub CLI is not installed in this workspace, so enabling the GitHub Pages repository setting remains a user action.
