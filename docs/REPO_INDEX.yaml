@@ -21,9 +21,9 @@ domains:
     tests: [packages/authz/src/index.test.ts]
     adrs: [ADR-0003, ADR-0005]
   oidc_authentication:
-    authoritative_files: [apps/api/src/auth.ts, docs/security/OIDC_AUTHENTICATION.md]
-    interfaces: [verifyAccessToken, verifyAccessTokenWithKeySet, GET /v1/me]
-    tests: [apps/api/src/auth.test.ts]
+    authoritative_files: [apps/api/src/auth.ts, apps/api/src/browser-auth.ts, docs/security/OIDC_AUTHENTICATION.md]
+    interfaces: [verifyAccessToken, verifyAccessTokenWithKeySet, PKCE browser login, GET /v1/me, GET /v1/session]
+    tests: [apps/api/src/auth.test.ts, apps/api/src/browser-auth.test.ts]
     adrs: [ADR-0005]
   audit:
     authoritative_files: [packages/audit/src/index.ts, infra/postgres/migrations/0001_foundation.sql]
@@ -45,4 +45,4 @@ domains:
     interfaces: [Original CSS visual system]
     tests: []
     adrs: []
-known_debt: [OIDC/JWKS validation adapter, migration runner, secure document ingestion, production deployment]
+known_debt: [production OIDC configuration, migration runner, secure document ingestion, production deployment]
