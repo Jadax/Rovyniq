@@ -6,7 +6,7 @@ import { createQuarantinedDocument, validateUploadCandidate, type QuarantinedDoc
 
 export interface WorkspaceAccess { taxpayerSubject(tenantId: string, workspaceId: string): Promise<string | null>; }
 export interface DocumentRecord extends QuarantinedDocument { tenantId: string; workspaceId: string; objectKey: string; idempotencyKey: string; }
-export interface DocumentPersistence { findByIdempotencyKey(tenantId: string, workspaceId: string, idempotencyKey: string): Promise<DocumentRecord | null>; saveQuarantined(input: { record: DocumentRecord; audit: AuditEvent }): Promise<void>; recordScanOutcome(input: { documentId: string; state: Extract<DocumentState, "VALIDATED" | "ARCHIVED">; scan: ScanResult; audit: AuditEvent }): Promise<void>; }
+export interface DocumentPersistence { findByIdempotencyKey(tenantId: string, workspaceId: string, idempotencyKey: string): Promise<DocumentRecord | null>; saveQuarantined(input: { record: DocumentRecord; audit: AuditEvent }): Promise<void>; recordScanOutcome(input: { tenantId: string; documentId: string; state: Extract<DocumentState, "VALIDATED" | "ARCHIVED">; scan: ScanResult; audit: AuditEvent }): Promise<void>; }
 export interface QuarantineReader { readImmutable(key: string): Promise<Uint8Array>; }
 export interface StagedUpload { accepted: boolean; document?: DocumentRecord; failure?: UploadFailure | "forbidden" | "invalid_idempotency_key"; replayed?: boolean; }
 
@@ -39,7 +39,7 @@ export class DocumentIngestionService {
     if (scan.verdict === "unavailable") return { completed: false };
     const state = scan.verdict === "clean" ? "VALIDATED" : "ARCHIVED";
     const audit = createAuditEvent({ actorId: input.principal.subject, action: scan.verdict === "clean" ? "document.scan_clean" : "document.scan_malicious", entityType: "document", entityId: input.record.id, tenantId: input.record.tenantId, correlationId: input.correlationId, metadata: { scanner: scan.engine, verdict: scan.verdict } }, this.dependencies.now?.());
-    await this.dependencies.persistence.recordScanOutcome({ documentId: input.record.id, state, scan, audit });
+    await this.dependencies.persistence.recordScanOutcome({ tenantId: input.record.tenantId, documentId: input.record.id, state, scan, audit });
     return { completed: true, state };
   }
 }

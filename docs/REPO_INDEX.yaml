@@ -30,6 +30,11 @@ domains:
     interfaces: [AuditEvent, OutboxEvent]
     tests: [packages/audit/src/index.test.ts]
     adrs: [ADR-0003]
+  postgres_persistence:
+    authoritative_files: [apps/api/src/postgres.ts, apps/api/src/migrations.ts, infra/postgres/migrations/0001_foundation.sql, infra/postgres/migrations/0002_document_ingestion.sql, docs/security/POSTGRES_PERSISTENCE.md]
+    interfaces: [PostgresTenantDatabase, PostgresDocumentPersistence, runMigrations]
+    tests: [apps/api/src/postgres.test.ts, apps/api/src/migrations.test.ts]
+    adrs: [ADR-0003]
   document_ingestion:
     authoritative_files: [packages/document-ingestion/src/index.ts, packages/document-ingestion/src/service.ts, packages/storage/src/index.ts, docs/security/DOCUMENT_INGESTION.md]
     interfaces: [validateUploadCandidate, quarantineAndScan, DocumentIngestionService, MalwareScanner, Quarantine object key]
