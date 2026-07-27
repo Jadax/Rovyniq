@@ -50,6 +50,11 @@ domains:
     interfaces: [validateUploadCandidate, quarantineAndScan, DocumentIngestionService, MalwareScanner, Quarantine object key]
     tests: [packages/document-ingestion/src/index.test.ts, packages/document-ingestion/src/service.test.ts]
     adrs: [ADR-0003]
+  authenticated_upload:
+    authoritative_files: [apps/api/src/server.ts, apps/api/src/ingestion-runtime.ts, apps/api/src/upload.ts, apps/web/documents.html, docs/security/AUTHENTICATED_UPLOAD.md]
+    interfaces: [POST /v1/workspaces/{workspaceId}/documents, readBoundedPdf]
+    tests: [apps/api/src/upload.test.ts]
+    adrs: [ADR-0003, ADR-0005]
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]

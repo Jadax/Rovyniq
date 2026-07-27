@@ -2,6 +2,9 @@ import { createServer } from "node:http";
 import { createRemoteJWKSet } from "jose";
 import { extractBearerToken, oidcConfigFromEnvironment, verifyAccessToken } from "./auth.ts";
 import { browserCookies, browserOidcConfigFromEnvironment, createAuthorizationRedirect, createSessionCookie, exchangeCodeForPrincipal, readAuthorizationState, readCookie, readSession, safeReturnTo } from "./browser-auth.ts";
+import { ingestionRuntimeFromEnvironment } from "./ingestion-runtime.ts";
+import { readBoundedPdf } from "./upload.ts";
+import type { DocumentType } from "../../../packages/canonical-tax-model/src/index.ts";
 
 const port = Number(process.env.PORT ?? 3001);
 const json = (response: import("node:http").ServerResponse, body: object, status = 200, headers: Record<string, string> = {}) => {
@@ -52,6 +55,25 @@ const server = createServer((request, response) => {
       if (!configuration) return json(response, { error: "identity_not_configured" }, 503);
       void readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret).then((principal) => json(response, { subject: principal.subject, roles: principal.roles })).catch(() => json(response, { error: "unauthenticated" }, 401));
     } catch { json(response, { error: "identity_not_configured" }, 503); }
+    return;
+  }
+
+  const uploadMatch = request.method === "POST" && /^\/v1\/workspaces\/([0-9a-f-]{36})\/documents$/.exec(url.pathname);
+  if (uploadMatch) {
+    void (async () => { try {
+      const configuration = browserConfiguration(); const runtime = ingestionRuntimeFromEnvironment(process.env);
+      if (!configuration || !runtime) return json(response, { error: "document_ingestion_not_configured" }, 503);
+      const principal = await readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret);
+      const documentType = request.headers["x-document-type"] as DocumentType;
+      const filename = request.headers["x-filename"];
+      const idempotencyKey = request.headers["idempotency-key"];
+      const allowedTypes: readonly DocumentType[] = ["IRP5_IT3A", "MEDICAL_CERTIFICATE", "IT3B", "IT3C", "IT3F", "IT3S", "OTHER"];
+      if (!principal.organisationId || !filename || typeof idempotencyKey !== "string" || !allowedTypes.includes(documentType)) return json(response, { error: "invalid_document_request" }, 400);
+      const staged = await runtime.service.stage({ principal, tenantId: principal.organisationId, workspaceId: uploadMatch[1]!, idempotencyKey, documentType, candidate: { filename, contentType: "application/pdf", bytes: await readBoundedPdf(request) }, correlationId: crypto.randomUUID() });
+      if (!staged.accepted || !staged.document) return json(response, { error: staged.failure ?? "upload_rejected" }, staged.failure === "file_too_large" ? 413 : staged.failure === "forbidden" ? 403 : 400);
+      const scanned = await runtime.service.scan({ principal: { subject: "ingestion-worker", organisationId: principal.organisationId, roles: ["system_admin"], verifiedBy: "oidc" }, record: staged.document, scanner: runtime.scanner, reader: runtime.reader, correlationId: crypto.randomUUID() });
+      json(response, { documentId: staged.document.id, state: scanned.state ?? "QUARANTINED", replayed: staged.replayed ?? false }, scanned.completed ? 201 : 202);
+    } catch (error) { json(response, { error: error instanceof Error && error.message === "payload_too_large" ? "payload_too_large" : "upload_failed" }, error instanceof Error && error.message === "payload_too_large" ? 413 : 401); } })();
     return;
   }
 
