@@ -17,3 +17,9 @@ test("estimate applies 2026 primary rebate", () => {
   assert.equal(result.normalTaxBeforeRebates, 43432);
   assert.equal(result.estimatedNormalTax, 26197);
 });
+test("breakdown distinguishes evidence-backed amounts from calculated amounts", () => {
+  const result = calculateEmploymentEstimate({ certificates: [irp5SarsStandard], ageAtYearEnd: 40 });
+  assert.equal(result.breakdown.find((line) => line.id === "income")?.evidenceRequired, true);
+  assert.equal(result.breakdown.find((line) => line.id === "normal_tax")?.source, "calculated");
+  assert.equal(result.breakdown.find((line) => line.id === "estimated_balance")?.amount, result.estimatedBalance);
+});

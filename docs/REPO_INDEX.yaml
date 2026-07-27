@@ -29,5 +29,10 @@ domains:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]
     tests: []
-    adrs: [ADR-0003]
+    adrs: [ADR-0003, ADR-0004]
+  integrations:
+    authoritative_files: [docs/integrations/EASYEQUITIES_INTEGRATION_RESEARCH.md]
+    interfaces: [Manual statement upload, future official provider adapter]
+    tests: []
+    adrs: [ADR-0004]
 known_debt: [OIDC/JWKS validation adapter, migration runner, secure document ingestion, production deployment]
