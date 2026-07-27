@@ -8,13 +8,13 @@ The published preview now uses an original CSS-only visual system with no remote
 
 ## In progress
 
-Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. A protected raw-PDF upload route and matching document screen are implemented; the route remains 503 until identity, PostgreSQL, encrypted storage and isolated scanning are all configured. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. An isolated ClamAV INSTREAM scanner adapter and tenant-matched scan-worker protocol are implemented but unconnected. An authenticated return workspace is intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
+Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. A protected raw-PDF upload route, document screen and authenticated return landing screen are implemented; upload remains 503 until identity, PostgreSQL, encrypted storage and isolated scanning are all configured. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. An isolated ClamAV INSTREAM scanner adapter and tenant-matched scan-worker protocol are implemented but unconnected. Document-list and live return-breakdown routes are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
 
 ## Next three tasks
 
 1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and isolated scanner, then connect the protected upload route and implement a full authenticated return-review workspace; replace the synthetic workspace data only after those controls pass.
+3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and isolated scanner, then connect the protected upload route and add document-list/live return-breakdown API routes; replace the synthetic workspace data only after those controls pass.
 
 ## Decisions and risks
 

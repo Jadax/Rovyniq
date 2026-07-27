@@ -55,6 +55,11 @@ domains:
     interfaces: [POST /v1/workspaces/{workspaceId}/documents, readBoundedPdf]
     tests: [apps/api/src/upload.test.ts]
     adrs: [ADR-0003, ADR-0005]
+  authenticated_workspace:
+    authoritative_files: [apps/web/app.html, apps/web/app.js, docs/product/AUTHENTICATED_WORKSPACE.md]
+    interfaces: [GET /v1/session, protected return landing]
+    tests: []
+    adrs: [ADR-0005]
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]
