@@ -30,6 +30,15 @@ const server = createServer((request, response) => {
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/v1/auth/register") {
+    try {
+      const configuration = browserConfiguration();
+      if (!configuration) return json(response, { error: "identity_not_configured" }, 503);
+      void createAuthorizationRedirect(configuration, safeReturnTo(url.searchParams.get("return_to")), secureCookies, "create").then(({ location, setCookie }) => { response.writeHead(302, { location, "set-cookie": setCookie, "cache-control": "no-store" }); response.end(); }).catch(() => json(response, { error: "identity_not_configured" }, 503));
+    } catch { json(response, { error: "identity_not_configured" }, 503); }
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/v1/auth/callback") {
     try {
       const configuration = browserConfiguration();

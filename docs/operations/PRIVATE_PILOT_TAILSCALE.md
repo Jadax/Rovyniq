@@ -16,6 +16,7 @@ This is a private, no-Docker pilot for the account owner and their invited house
 3. Create a local `.env` from `.env.pilot.example`, not from `.env.example`. This keeps storage and scanner settings absent, so document uploads fail closed. Do not commit it or share its values.
 4. Configure the browser callback using the final Tailscale HTTPS hostname: `https://tax-pilot.<tailnet>.ts.net/v1/auth/callback`. Register the exact same value in ZITADEL and set the matching post-logout URL to `https://tax-pilot.<tailnet>.ts.net/app`.
 5. Set `NODE_ENV=production`, `PORT=3001`, and all OIDC settings. Use ZITADEL's HTTPS issuer, OAuth v2 authorization/token endpoints, and JWKS endpoint. Set `OIDC_AUDIENCE` to the Web application's client ID and request the ZITADEL project-role scope from `.env.example`.
+6. In ZITADEL's applicable Login Behavior settings, enable local username/password login and self-registration only for the household pilot. After each account is created, assign the `taxpayer` role under the Rovyniq project's Role Assignments. Do not automatically grant taxpayer privileges to anonymous registrants in a public launch.
 
 ## Start and expose privately
 

@@ -19,6 +19,11 @@ test("OIDC browser flow uses PKCE and binds the state to an encrypted short-live
   assert.equal(state.verifier.length > 40, true);
 });
 
+test("registration starts with the provider's account-creation prompt", async () => {
+  const result = await createAuthorizationRedirect(configuration, "/app", true, "create");
+  assert.equal(new URL(result.location).searchParams.get("prompt"), "create");
+});
+
 test("browser sessions are signed, short lived and do not include provider tokens", async () => {
   const cookie = await createSessionCookie({ subject: "user-1", organisationId: "tenant-1", roles: ["taxpayer"], verifiedBy: "oidc" }, configuration.cookieSecret, true);
   const principal = await readSession(readCookie(cookie, browserCookies.sessionCookieName), configuration.cookieSecret);

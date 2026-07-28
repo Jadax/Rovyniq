@@ -35,13 +35,15 @@ function cookieHeader(name: string, value: string, maxAgeSeconds: number, secure
   return `${name}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSeconds}${secure ? "; Secure" : ""}`;
 }
 
-export async function createAuthorizationRedirect(configuration: BrowserOidcConfig, returnTo: string, secureCookie: boolean): Promise<{ location: string; setCookie: string }> {
+export async function createAuthorizationRedirect(configuration: BrowserOidcConfig, returnTo: string, secureCookie: boolean, prompt?: "create"): Promise<{ location: string; setCookie: string }> {
   const state = crypto.randomUUID();
   const verifier = Buffer.from(crypto.getRandomValues(new Uint8Array(48))).toString("base64url");
   const challenge = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))).toString("base64url");
   const transient = await new EncryptJWT({ state, verifier, return_to: safeReturnTo(returnTo) }).setProtectedHeader({ alg: "dir", enc: "A256GCM" }).setIssuer(sessionIssuer).setIssuedAt().setExpirationTime("5m").encrypt(configuration.cookieSecret);
   const endpoint = new URL(configuration.authorizationEndpoint);
-  endpoint.search = new URLSearchParams({ response_type: "code", client_id: configuration.clientId, redirect_uri: configuration.callbackUrl, scope: configuration.scopes, state, code_challenge: challenge, code_challenge_method: "S256" }).toString();
+  const parameters = new URLSearchParams({ response_type: "code", client_id: configuration.clientId, redirect_uri: configuration.callbackUrl, scope: configuration.scopes, state, code_challenge: challenge, code_challenge_method: "S256" });
+  if (prompt === "create") parameters.set("prompt", "create");
+  endpoint.search = parameters.toString();
   return { location: endpoint.toString(), setCookie: cookieHeader(transientCookieName, transient, 300, secureCookie) };
 }
 

@@ -15,6 +15,8 @@
 
 The browser flow creates an encrypted five-minute state cookie and a signed ten-minute HttpOnly, SameSite session cookie. It validates the callback state, uses S256 PKCE, discards the provider tokens after identity verification, and accepts only same-origin relative return paths. Values belong in a deployment secret manager, never the GitHub Pages preview, repository, browser storage or client bundle.
 
+`GET /v1/auth/start` begins hosted login. `GET /v1/auth/register` begins the same PKCE flow with the OIDC `prompt=create` parameter, which opens ZITADEL's hosted registration journey. Rovyniq never receives user passwords. Self-registration must be enabled in the applicable ZITADEL login policy, and a newly registered user must receive an explicit project role assignment before protected taxpayer operations are permitted.
+
 ## Not implemented yet
 
 Secure refresh-token strategy, user provisioning, session/device management, account recovery, MFA/passkeys, rate limiting and persistent audit records are not implemented. No route that handles taxpayer data may be enabled before these controls and a production provider configuration are complete.

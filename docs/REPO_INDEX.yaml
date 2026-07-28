@@ -22,7 +22,7 @@ domains:
     adrs: [ADR-0003, ADR-0005]
   oidc_authentication:
     authoritative_files: [apps/api/src/auth.ts, apps/api/src/browser-auth.ts, docs/security/OIDC_AUTHENTICATION.md]
-    interfaces: [verifyAccessToken, verifyAccessTokenWithKeySet, PKCE browser login, GET /v1/me, GET /v1/session]
+    interfaces: [verifyAccessToken, verifyAccessTokenWithKeySet, PKCE browser login, hosted registration, GET /v1/me, GET /v1/session]
     tests: [apps/api/src/auth.test.ts, apps/api/src/browser-auth.test.ts]
     adrs: [ADR-0005]
   audit:
