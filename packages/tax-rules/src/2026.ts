@@ -14,6 +14,10 @@ export const taxYear2026 = {
   ] satisfies readonly TaxBracket[],
   rebates: { primary: 17235, secondary65OrOlder: 9444, tertiary75OrOlder: 3145 },
   medicalSchemeFeesCredit: { firstTwoPeopleMonthly: 364, additionalPersonMonthly: 246 },
-  retirementContribution: { percentageOfGreaterOfRemunerationOrTaxableIncome: 0.275, annualCap: 350000 },
-  interestExemption: { under65: 23800, age65OrOlder: 34500 }
+  retirementFundLimit: { percentage: 0.275, annualCap: 350000 },
+  interestExemption: { under65: 23800, age65OrOlder: 34500 },
+  cgtAnnualExclusion: 40000,
+  cgtPrimaryResidenceExclusion: 2000000,
+  cgtInclusionRate: 0.4,
+  donationCapPercentage: 0.1
 } as const;

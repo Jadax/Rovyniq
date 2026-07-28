@@ -23,7 +23,10 @@ const assets = new Map<string, { file: string; contentType: string }>([
   ["/documents.js", { file: "documents.js", contentType: "text/javascript; charset=utf-8" }],
   ["/interview.js", { file: "interview.js", contentType: "text/javascript; charset=utf-8" }],
   ["/pdf-extract.js", { file: "pdf-extract.js", contentType: "text/javascript; charset=utf-8" }],
-  ["/sections.js", { file: "sections.js", contentType: "text/javascript; charset=utf-8" }]
+  ["/sections.js", { file: "sections.js", contentType: "text/javascript; charset=utf-8" }],
+  ["/submission", { file: "submission.html", contentType: "text/html; charset=utf-8" }],
+  ["/submission.html", { file: "submission.html", contentType: "text/html; charset=utf-8" }],
+  ["/submission.js", { file: "submission.js", contentType: "text/javascript; charset=utf-8" }]
 ]);
 
 export function staticAsset(pathname: string): { file: string; contentType: string } | undefined {

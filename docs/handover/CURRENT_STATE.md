@@ -10,11 +10,13 @@ The published preview now uses an original CSS-only visual system with no remote
 
 Phase 1 foundation. OIDC/JWKS token verification plus hosted login and hosted registration through authorisation-code-with-PKCE are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. ZITADEL's asserted project-role and resource-owner claims are mapped only to recognised application roles. A verified `taxpayer` role now provisions one Rovyniq-owned tenant and one idempotent 2026 ITR12 workspace per identity subject; identity-provider organisations are not used as the public taxpayer data boundary. A protected raw-PDF upload route, document screen and authenticated return landing screen are implemented; upload remains 503 until identity, PostgreSQL, encrypted storage and isolated scanning are all configured. The Node API now allowlists and serves the same web assets for a Windows + Tailscale private household pilot; GitHub Pages remains no-data. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. An isolated ClamAV INSTREAM scanner adapter and tenant-matched scan-worker protocol are implemented but unconnected. Docker is not installed in this workspace, so the local stack is unrun.
 
+The 16-section guided interview flow with PDF auto-fill is complete. A submission summary page (`submission.html`) shows all answers grouped by ITR12 form section with an estimated refund/liability calculation and a print button for eFiling handoff. The tax engine now has a `calculateFullEstimate` function covering employment, business, rental, investment, CGT, retirement, medical, travel, home office, donations, and other deductions. The ITR12 field mapping compliance doc (`docs/compliance/ITR12_FIELD_MAPPING.md`) maps each interview field to its ITR12 form section and SARS source codes.
+
 ## Next three tasks
 
-1. In ZITADEL, configure verified self-registration to grant only the base `taxpayer` role, then verify that each household user receives one secure Rovyniq workspace.
-2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure the private R2 bucket, encrypted storage secrets and Cloud Run ClamAV sidecar described in `docs/operations/CLOUD_RUN_CLAMAV_SIDECAR.md`; then exercise document ingestion with synthetic PDFs before any household documents are accepted.
+1. Wire the submission page to the backend API so the engine runs server-side instead of duplicating calculation logic in the browser.
+2. Add golden tests for each sub-rule in `calculateFullEstimate` (business, rental, CGT, medical, retirement, donation, travel, home office).
+3. Build the approval snapshot flow: freeze answers into immutable state, generate a structured handoff package, and present the eFiling handoff guide.
 
 ## Decisions and risks
 

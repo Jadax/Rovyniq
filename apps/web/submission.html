@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Rovyniq ITR12 submission summary - review your answers and estimated tax before eFiling.">
+  <link rel="stylesheet" href="interview.css">
+  <title>Rovyniq: Submission summary - 2026 ITR12</title>
+  <style>
+    :root{--ink:#11221f;--muted:#5e6d67;--paper:#f7f5ed;--line:#dce2da;--deep:#123c32;--soft:#edf5ef;--amber:#db9850;--radius:12px}
+
+    .submission-header{max-width:960px;margin:0 auto;padding:2rem 2.5rem 1rem}
+    .submission-header h1{font-size:1.8rem;letter-spacing:-.04em;margin:0 0 .3rem}
+    .submission-header p{color:var(--muted);font-size:.88rem;margin:0 0 1.2rem}
+
+    .estimate-card{background:linear-gradient(135deg,var(--deep),#0d2e25);color:#fff;border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+    .estimate-card h2{font-size:1rem;font-weight:600;margin:0 0 .3rem;color:#b5d5c3}
+    .estimate-amount{font-size:2.4rem;font-weight:800;letter-spacing:-.04em;margin:0 0 .5rem}
+    .estimate-card .estimate-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;font-size:.78rem;color:#b5d5c3;border-top:1px solid #2b5542;padding-top:.75rem;margin-top:.5rem}
+    .estimate-card .estimate-details span{display:flex;flex-direction:column}
+    .estimate-card .estimate-details .val{color:#fff;font-weight:700;font-size:.9rem}
+    .estimate-refund{color:#8ce0bd}
+    .estimate-payable{color:#f0aa7a}
+
+    .submission-main{max-width:960px;margin:0 auto;padding:0 2.5rem 3rem}
+    .submission-main .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem}
+    .submission-main .actions button,.submission-main .actions a{padding:.6rem 1.4rem;border-radius:999px;font-size:.82rem;font-weight:700;cursor:pointer;border:0;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem}
+    .submission-main .actions .print-btn{background:var(--deep);color:#fff}
+    .submission-main .actions .efiling-link{background:#fff;border:1px solid var(--line);color:var(--ink)}
+    .submission-main .actions .efiling-link:hover{background:var(--soft)}
+    .submission-main .actions .back-link{background:transparent;color:var(--muted);border:0;font-weight:400;font-size:.78rem}
+    .submission-main .actions .back-link:hover{color:var(--deep)}
+
+    .section-group{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
+    .section-group h3{font-size:.95rem;margin:0 0 .25rem;display:flex;align-items:center;gap:.5rem}
+    .section-group .itr12-ref{font-size:.65rem;color:var(--muted);font-weight:400;background:var(--soft);border-radius:4px;padding:.1rem .35rem;text-transform:uppercase;letter-spacing:.05em}
+    .section-group table{width:100%;border-collapse:collapse;margin-top:.75rem;font-size:.8rem}
+    .section-group td{padding:.4rem 0;border-bottom:1px solid #f0f2ed;vertical-align:top}
+    .section-group td:first-child{color:var(--muted);padding-right:.75rem;white-space:nowrap}
+    .section-group td:last-child{text-align:right;font-weight:600;word-break:break-word}
+    .section-group .field-ref{display:block;font-size:.65rem;color:#8c9d94;font-weight:400;margin-top:.15rem}
+    .section-group .gate-answer{display:inline-block;background:var(--soft);border-radius:999px;padding:.15rem .5rem;font-size:.7rem;font-weight:600;margin-bottom:.5rem}
+    .section-group .gate-answer.yes{background:#dff0e5;color:#0e6b4e}
+    .section-group .gate-answer.no{background:#f0e8df;color:#8a6630}
+    .section-group .sub-section{margin-top:.5rem;padding:.5rem .7rem;background:#f8f9f5;border-radius:6px}
+    .section-group .sub-section h4{font-size:.75rem;margin:0 0 .3rem;color:var(--muted)}
+
+    .footer-note{text-align:center;font-size:.72rem;color:var(--muted);padding:1rem 2rem 3rem;max-width:960px;margin:0 auto}
+    .footer-note p{margin:.3rem 0}
+    .footer-note strong{color:var(--ink)}
+
+    @media print {
+      body{background:#fff}
+      .app-header{display:none}
+      .submission-main .actions{display:none}
+      .submission-header{padding:0 0 1rem}
+      .submission-main{padding:0}
+      .estimate-card{break-inside:avoid;padding:1rem 1.5rem}
+      .section-group{break-inside:avoid}
+      .footer-note{padding:1rem 0 0}
+    }
+
+    @media(max-width:700px){
+      .submission-header,.submission-main{padding-left:1.25rem;padding-right:1.25rem}
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html">Rovyniq<span>.</span></a>
+    <span class="year-label">2026 ITR12 submission summary</span>
+    <div class="header-right">
+      <span id="progress-label" class="progress-label"></span>
+      <button id="sign-out" class="secondary small" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <div class="submission-header">
+    <h1>Your ITR12 submission summary</h1>
+    <p>Review your answers and estimated tax position before filing on SARS eFiling.</p>
+  </div>
+
+  <div class="submission-main">
+    <div class="actions">
+      <button class="print-btn" type="button" onclick="window.print()">Print or save as PDF</button>
+      <a class="efiling-link" href="https://secure.sarsefiling.co.za/" target="_blank" rel="noopener noreferrer">Open SARS eFiling</a>
+      <a class="back-link" href="documents.html">Back to documents</a>
+    </div>
+    <div id="estimate-area"></div>
+    <div id="sections-area"></div>
+  </div>
+
+  <div class="footer-note">
+    <p><strong>This summary is a preparation aid only.</strong> It is not a submitted tax return.</p>
+    <p>Use it as a reference while completing your ITR12 on SARS eFiling. The estimated calculation is for guidance - SARS will compute the final assessment.</p>
+    <p>All data stays in your browser. No information is sent to any server.</p>
+  </div>
+
+  <script type="module" src="submission.js"></script>
+</body>
+</html>
