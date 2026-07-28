@@ -5,7 +5,7 @@ import { browserCookies, browserOidcConfigFromEnvironment, createAuthorizationRe
 import { ingestionRuntimeFromEnvironment } from "./ingestion-runtime.ts";
 import { readBoundedPdf } from "./upload.ts";
 import type { DocumentType } from "../../../packages/canonical-tax-model/src/index.ts";
-import { PostgresDocumentPersistence, PostgresTenantDatabase, postgresConfigFromEnvironment } from "./postgres.ts";
+import { PostgresDocumentPersistence, PostgresTenantDatabase, PostgresWorkspaceAnswers, postgresConfigFromEnvironment } from "./postgres.ts";
 import { IdentityWorkspaceOnboarding } from "./identity-onboarding.ts";
 import { requirePermission } from "../../../packages/authz/src/index.ts";
 import { serveStaticSite } from "./static-site.ts";
@@ -93,6 +93,20 @@ const server = createServer((request, response) => {
       json(response, { documents: await persistence.listDocuments(workspace.tenantId, documentsMatch[1]!) });
     } catch { json(response, { error: "workspace_unavailable" }, 401); } })();
     return;
+  }
+
+  const answersMatch = /^\/v1\/workspaces\/([0-9a-f-]{36})\/answers$/.exec(url.pathname);
+  if (answersMatch && (request.method === "GET" || request.method === "PUT")) {
+    void (async () => { try {
+      const configuration = browserConfiguration(); if (!configuration || !tenantDatabase || !onboarding) return json(response, { error: "workspace_not_configured" }, 503);
+      const principal = await readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret); const workspace = await onboarding.findForSubject(principal.subject);
+      if (!workspace || workspace.workspaceId !== answersMatch[1]!) return json(response, { error: "forbidden" }, 403);
+      const answers = new PostgresWorkspaceAnswers(tenantDatabase);
+      if (request.method === "GET") return json(response, { answers: await answers.list(workspace.tenantId, workspace.workspaceId) });
+      const chunks: Buffer[] = []; for await (const chunk of request) { chunks.push(Buffer.from(chunk)); if (Buffer.concat(chunks).byteLength > 20000) return json(response, { error: "payload_too_large" }, 413); }
+      const body = JSON.parse(Buffer.concat(chunks).toString("utf8")); if (!/^[a-z0-9_]{3,80}$/.test(body.questionKey ?? "") || !["boolean", "string", "number"].includes(typeof body.value)) return json(response, { error: "invalid_answer" }, 400);
+      json(response, await answers.save({ tenantId: workspace.tenantId, workspaceId: workspace.workspaceId, questionKey: body.questionKey, value: body.value, actorId: principal.subject, correlationId: crypto.randomUUID() }), 201);
+    } catch { json(response, { error: "answer_unavailable" }, 400); } })(); return;
   }
 
   const uploadMatch = request.method === "POST" && /^\/v1\/workspaces\/([0-9a-f-]{36})\/documents$/.exec(url.pathname);

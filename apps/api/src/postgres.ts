@@ -67,4 +67,15 @@ export class PostgresDocumentPersistence implements DocumentPersistence, Workspa
   }
 }
 
+export class PostgresWorkspaceAnswers {
+  private readonly database: TenantDatabase;
+  constructor(database: TenantDatabase) { this.database = database; }
+  async list(tenantId: string, workspaceId: string): Promise<readonly { questionKey: string; value: unknown; revision: number; updatedAt: string }[]> {
+    return this.database.withTenant(tenantId, async (sql) => (await sql.query<{ question_key: string; value: unknown; revision: number; created_at: string }>("select distinct on (question_key) question_key, value, revision, created_at from workspace_answer_revisions where workspace_id = $1 order by question_key, revision desc", [workspaceId])).rows.map((row) => ({ questionKey: row.question_key, value: row.value, revision: row.revision, updatedAt: row.created_at })));
+  }
+  async save(input: { tenantId: string; workspaceId: string; questionKey: string; value: unknown; actorId: string; correlationId: string }): Promise<{ revision: number }> {
+    return this.database.withTenant(input.tenantId, async (sql) => { const revision = Number((await sql.query<{ revision: number }>("select coalesce(max(revision), 0) + 1 as revision from workspace_answer_revisions where workspace_id = $1 and question_key = $2", [input.workspaceId, input.questionKey])).rows[0]!.revision); await sql.query("insert into workspace_answer_revisions (id, tenant_id, workspace_id, question_key, value, source, revision) values ($1,$2,$3,$4,$5,$6,$7)", [crypto.randomUUID(), input.tenantId, input.workspaceId, input.questionKey, JSON.stringify(input.value), "user", revision]); await insertAudit(sql, { id: crypto.randomUUID(), tenantId: input.tenantId, actorId: input.actorId, action: "workspace.answer_saved", entityType: "workspace_answer", entityId: `${input.workspaceId}:${input.questionKey}:${revision}`, correlationId: input.correlationId, metadata: { workspaceId: input.workspaceId, questionKey: input.questionKey, revision }, occurredAt: new Date().toISOString() }); return { revision }; });
+  }
+}
+
 async function insertAudit(sql: Sql, audit: AuditEvent): Promise<void> { await sql.query("insert into audit_events (id, tenant_id, actor_id, action, entity_type, entity_id, correlation_id, metadata, occurred_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9)", [audit.id, audit.tenantId, audit.actorId, audit.action, audit.entityType, audit.entityId, audit.correlationId, JSON.stringify(audit.metadata), audit.occurredAt]); }
