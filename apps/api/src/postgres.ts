@@ -2,8 +2,9 @@ import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import type { AuditEvent } from "../../../packages/audit/src/index.ts";
 import type { DocumentPersistence, DocumentRecord, WorkspaceAccess } from "../../../packages/document-ingestion/src/service.ts";
 
-interface Sql { query<T extends QueryResultRow = QueryResultRow>(text: string, values?: readonly unknown[]): Promise<{ rows: T[] }>; }
+export interface Sql { query<T extends QueryResultRow = QueryResultRow>(text: string, values?: readonly unknown[]): Promise<{ rows: T[] }>; }
 export interface TenantDatabase { withTenant<T>(tenantId: string, work: (sql: Sql) => Promise<T>): Promise<T>; }
+export interface SystemDatabase { withSystem<T>(work: (sql: Sql) => Promise<T>): Promise<T>; }
 export interface PostgresConfig { connectionString: string; ssl: { rejectUnauthorized: boolean }; }
 
 export function postgresConfigFromEnvironment(environment: NodeJS.ProcessEnv): PostgresConfig | null {
@@ -15,7 +16,7 @@ export function postgresConfigFromEnvironment(environment: NodeJS.ProcessEnv): P
   return { connectionString, ssl: { rejectUnauthorized: environment.POSTGRES_SSL_REJECT_UNAUTHORIZED !== "false" } };
 }
 
-export class PostgresTenantDatabase implements TenantDatabase {
+export class PostgresTenantDatabase implements TenantDatabase, SystemDatabase {
   private readonly pool: Pool;
   constructor(configuration: PostgresConfig) { this.pool = new Pool({ connectionString: configuration.connectionString, ssl: configuration.ssl, max: 10 }); }
   async withTenant<T>(tenantId: string, work: (sql: Sql) => Promise<T>): Promise<T> {
@@ -23,6 +24,15 @@ export class PostgresTenantDatabase implements TenantDatabase {
     try {
       await client.query("begin");
       await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]);
+      const result = await work(client);
+      await client.query("commit");
+      return result;
+    } catch (error) { await client.query("rollback"); throw error; } finally { client.release(); }
+  }
+  async withSystem<T>(work: (sql: Sql) => Promise<T>): Promise<T> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      await client.query("begin");
       const result = await work(client);
       await client.query("commit");
       return result;

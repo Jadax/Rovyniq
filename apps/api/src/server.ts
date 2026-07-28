@@ -6,6 +6,7 @@ import { ingestionRuntimeFromEnvironment } from "./ingestion-runtime.ts";
 import { readBoundedPdf } from "./upload.ts";
 import type { DocumentType } from "../../../packages/canonical-tax-model/src/index.ts";
 import { PostgresDocumentPersistence, PostgresTenantDatabase, postgresConfigFromEnvironment } from "./postgres.ts";
+import { IdentityWorkspaceOnboarding } from "./identity-onboarding.ts";
 import { requirePermission } from "../../../packages/authz/src/index.ts";
 import { serveStaticSite } from "./static-site.ts";
 
@@ -16,6 +17,10 @@ const json = (response: import("node:http").ServerResponse, body: object, status
 };
 const secureCookies = process.env.NODE_ENV === "production";
 const browserConfiguration = () => browserOidcConfigFromEnvironment(process.env);
+const postgresConfiguration = postgresConfigFromEnvironment(process.env);
+const tenantDatabase = postgresConfiguration ? new PostgresTenantDatabase(postgresConfiguration) : null;
+const assessmentYear = Number(process.env.RETURN_ASSESSMENT_YEAR ?? "2026");
+const onboarding = tenantDatabase && Number.isInteger(assessmentYear) && assessmentYear >= 2026 ? new IdentityWorkspaceOnboarding(tenantDatabase, assessmentYear) : null;
 
 const server = createServer((request, response) => {
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
@@ -65,7 +70,10 @@ const server = createServer((request, response) => {
     try {
       const configuration = browserConfiguration();
       if (!configuration) return json(response, { error: "identity_not_configured" }, 503);
-      void readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret).then((principal) => json(response, { subject: principal.subject, roles: principal.roles })).catch(() => json(response, { error: "unauthenticated" }, 401));
+      void readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret).then(async (principal) => {
+        const workspace = principal.roles.includes("taxpayer") && onboarding ? await onboarding.ensureForTaxpayer(principal) : null;
+        json(response, { subject: principal.subject, roles: principal.roles, workspace });
+      }).catch(() => json(response, { error: "unauthenticated" }, 401));
     } catch { json(response, { error: "identity_not_configured" }, 503); }
     return;
   }
@@ -73,15 +81,16 @@ const server = createServer((request, response) => {
   const documentsMatch = request.method === "GET" && /^\/v1\/workspaces\/([0-9a-f-]{36})\/documents$/.exec(url.pathname);
   if (documentsMatch) {
     void (async () => { try {
-      const configuration = browserConfiguration(), database = postgresConfigFromEnvironment(process.env);
-      if (!configuration || !database) return json(response, { error: "workspace_not_configured" }, 503);
+      const configuration = browserConfiguration();
+      if (!configuration || !tenantDatabase || !onboarding) return json(response, { error: "workspace_not_configured" }, 503);
       const principal = await readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret);
-      if (!principal.organisationId) return json(response, { error: "forbidden" }, 403);
       requirePermission(principal, "workspace:read");
-      const persistence = new PostgresDocumentPersistence(new PostgresTenantDatabase(database));
-      const owner = await persistence.taxpayerSubject(principal.organisationId, documentsMatch[1]!);
+      const workspace = await onboarding.findForSubject(principal.subject);
+      if (!workspace || workspace.workspaceId !== documentsMatch[1]!) return json(response, { error: "forbidden" }, 403);
+      const persistence = new PostgresDocumentPersistence(tenantDatabase);
+      const owner = await persistence.taxpayerSubject(workspace.tenantId, documentsMatch[1]!);
       if (!owner || (principal.roles.includes("taxpayer") && owner !== principal.subject)) return json(response, { error: "forbidden" }, 403);
-      json(response, { documents: await persistence.listDocuments(principal.organisationId, documentsMatch[1]!) });
+      json(response, { documents: await persistence.listDocuments(workspace.tenantId, documentsMatch[1]!) });
     } catch { json(response, { error: "workspace_unavailable" }, 401); } })();
     return;
   }
@@ -90,16 +99,18 @@ const server = createServer((request, response) => {
   if (uploadMatch) {
     void (async () => { try {
       const configuration = browserConfiguration(); const runtime = ingestionRuntimeFromEnvironment(process.env);
-      if (!configuration || !runtime) return json(response, { error: "document_ingestion_not_configured" }, 503);
+      if (!configuration || !runtime || !onboarding) return json(response, { error: "document_ingestion_not_configured" }, 503);
       const principal = await readSession(readCookie(request.headers.cookie, browserCookies.sessionCookieName), configuration.cookieSecret);
       const documentType = request.headers["x-document-type"] as DocumentType;
       const filename = request.headers["x-filename"];
       const idempotencyKey = request.headers["idempotency-key"];
       const allowedTypes: readonly DocumentType[] = ["IRP5_IT3A", "MEDICAL_CERTIFICATE", "IT3B", "IT3C", "IT3F", "IT3S", "OTHER"];
-      if (!principal.organisationId || !filename || typeof idempotencyKey !== "string" || !allowedTypes.includes(documentType)) return json(response, { error: "invalid_document_request" }, 400);
-      const staged = await runtime.service.stage({ principal, tenantId: principal.organisationId, workspaceId: uploadMatch[1]!, idempotencyKey, documentType, candidate: { filename, contentType: "application/pdf", bytes: await readBoundedPdf(request) }, correlationId: crypto.randomUUID() });
+      const workspace = await onboarding.findForSubject(principal.subject);
+      if (!workspace || workspace.workspaceId !== uploadMatch[1]! || !filename || typeof idempotencyKey !== "string" || !allowedTypes.includes(documentType)) return json(response, { error: "invalid_document_request" }, 400);
+      const tenantPrincipal = { ...principal, organisationId: workspace.tenantId };
+      const staged = await runtime.service.stage({ principal: tenantPrincipal, tenantId: workspace.tenantId, workspaceId: uploadMatch[1]!, idempotencyKey, documentType, candidate: { filename, contentType: "application/pdf", bytes: await readBoundedPdf(request) }, correlationId: crypto.randomUUID() });
       if (!staged.accepted || !staged.document) return json(response, { error: staged.failure ?? "upload_rejected" }, staged.failure === "file_too_large" ? 413 : staged.failure === "forbidden" ? 403 : 400);
-      const scanned = await runtime.service.scan({ principal: { subject: "ingestion-worker", organisationId: principal.organisationId, roles: ["system_admin"], verifiedBy: "oidc" }, record: staged.document, scanner: runtime.scanner, reader: runtime.reader, correlationId: crypto.randomUUID() });
+      const scanned = await runtime.service.scan({ principal: { subject: "ingestion-worker", organisationId: workspace.tenantId, roles: ["system_admin"], verifiedBy: "oidc" }, record: staged.document, scanner: runtime.scanner, reader: runtime.reader, correlationId: crypto.randomUUID() });
       json(response, { documentId: staged.document.id, state: scanned.state ?? "QUARANTINED", replayed: staged.replayed ?? false }, scanned.completed ? 201 : 202);
     } catch (error) { json(response, { error: error instanceof Error && error.message === "payload_too_large" ? "payload_too_large" : "upload_failed" }, error instanceof Error && error.message === "payload_too_large" ? 413 : 401); } })();
     return;

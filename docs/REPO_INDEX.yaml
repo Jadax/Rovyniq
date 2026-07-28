@@ -56,9 +56,9 @@ domains:
     tests: [apps/api/src/upload.test.ts]
     adrs: [ADR-0003, ADR-0005]
   authenticated_workspace:
-    authoritative_files: [apps/web/app.html, apps/web/app.js, docs/product/AUTHENTICATED_WORKSPACE.md]
-    interfaces: [GET /v1/session, protected return landing]
-    tests: []
+    authoritative_files: [apps/web/app.html, apps/web/app.js, apps/api/src/identity-onboarding.ts, infra/postgres/migrations/0003_identity_tenants.sql, docs/product/AUTHENTICATED_WORKSPACE.md]
+    interfaces: [GET /v1/session, verified-taxpayer provisioning, protected return landing]
+    tests: [apps/api/src/identity-onboarding.test.ts]
     adrs: [ADR-0005]
   private_pilot_delivery:
     authoritative_files: [apps/api/src/static-site.ts, docs/operations/PRIVATE_PILOT_TAILSCALE.md]
