@@ -8,13 +8,13 @@ The published preview now uses an original CSS-only visual system with no remote
 
 ## In progress
 
-Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. A protected raw-PDF upload route, document screen and authenticated return landing screen are implemented; upload remains 503 until identity, PostgreSQL, encrypted storage and isolated scanning are all configured. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. An isolated ClamAV INSTREAM scanner adapter and tenant-matched scan-worker protocol are implemented but unconnected. Document-list and live return-breakdown routes are intentionally not yet implemented. Docker is not installed in this workspace, so the local stack is unrun.
+Phase 1 foundation. OIDC/JWKS token verification plus an authorisation-code-with-PKCE browser flow are implemented and tested as fail-closed API boundaries. The browser flow uses encrypted short-lived state, S256 PKCE, signed HttpOnly sessions and discards provider tokens. ZITADEL's asserted project-role and resource-owner claims are mapped only to recognised application roles. A protected raw-PDF upload route, document screen and authenticated return landing screen are implemented; upload remains 503 until identity, PostgreSQL, encrypted storage and isolated scanning are all configured. The Node API now allowlists and serves the same web assets for a Windows + Tailscale private household pilot; GitHub Pages remains no-data. A TLS-only tenant-scoped PostgreSQL adapter and advisory-lock migration runner are implemented but unconnected. An S3-compatible envelope-encrypted object-storage adapter is implemented but unconnected. An isolated ClamAV INSTREAM scanner adapter and tenant-matched scan-worker protocol are implemented but unconnected. Docker is not installed in this workspace, so the local stack is unrun.
 
 ## Next three tasks
 
-1. In `Jadax/Rovyniq` Settings → Pages, select GitHub Actions to deploy the synthetic preview (`apps/web`).
+1. For the household pilot, follow `docs/operations/PRIVATE_PILOT_TAILSCALE.md`, configure a same-origin ZITADEL callback, and verify that both approved devices can authenticate through Tailscale.
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure a production OIDC provider and same-origin application deployment, run reviewed PostgreSQL migrations, configure encrypted storage and isolated scanner, then connect the protected upload/document-list routes and add the live deterministic return-breakdown route; replace the synthetic workspace data only after those controls pass.
+3. Configure PostgreSQL, encrypted storage and an isolated scanner, run reviewed migrations, then enable and exercise document ingestion with synthetic PDFs before any household documents are accepted.
 
 ## Decisions and risks
 

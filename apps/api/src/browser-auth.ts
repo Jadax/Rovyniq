@@ -6,7 +6,7 @@ const sessionIssuer = "rovyniq-session";
 const sessionCookieName = "rovyniq_session";
 const transientCookieName = "rovyniq_oidc";
 
-export interface BrowserOidcConfig extends OidcConfig { clientId: string; callbackUrl: string; authorizationEndpoint: string; tokenEndpoint: string; cookieSecret: Uint8Array; }
+export interface BrowserOidcConfig extends OidcConfig { clientId: string; callbackUrl: string; authorizationEndpoint: string; tokenEndpoint: string; scopes: string; cookieSecret: Uint8Array; }
 
 export function browserOidcConfigFromEnvironment(environment: NodeJS.ProcessEnv): BrowserOidcConfig | null {
   const oidc = oidcConfigFromEnvironment(environment);
@@ -14,6 +14,7 @@ export function browserOidcConfigFromEnvironment(environment: NodeJS.ProcessEnv)
   const callbackUrl = environment.OIDC_CALLBACK_URL;
   const authorizationEndpoint = environment.OIDC_AUTHORIZATION_ENDPOINT;
   const tokenEndpoint = environment.OIDC_TOKEN_ENDPOINT;
+  const scopes = environment.OIDC_BROWSER_SCOPES ?? "openid profile email";
   const encodedSecret = environment.SESSION_COOKIE_SECRET;
   if (!oidc || !clientId || !callbackUrl || !authorizationEndpoint || !tokenEndpoint || !encodedSecret) return null;
   const cookieSecret = Buffer.from(encodedSecret, "base64url");
@@ -22,7 +23,8 @@ export function browserOidcConfigFromEnvironment(environment: NodeJS.ProcessEnv)
     const parsed = new URL(value);
     if (parsed.protocol !== "https:" && environment.NODE_ENV === "production") throw new Error("OIDC browser endpoints must use HTTPS in production.");
   }
-  return { ...oidc, clientId, callbackUrl, authorizationEndpoint, tokenEndpoint, cookieSecret };
+  if (!scopes.split(/\s+/).includes("openid")) throw new Error("OIDC_BROWSER_SCOPES must include openid.");
+  return { ...oidc, clientId, callbackUrl, authorizationEndpoint, tokenEndpoint, scopes, cookieSecret };
 }
 
 export function safeReturnTo(value: string | null): string {
@@ -39,7 +41,7 @@ export async function createAuthorizationRedirect(configuration: BrowserOidcConf
   const challenge = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))).toString("base64url");
   const transient = await new EncryptJWT({ state, verifier, return_to: safeReturnTo(returnTo) }).setProtectedHeader({ alg: "dir", enc: "A256GCM" }).setIssuer(sessionIssuer).setIssuedAt().setExpirationTime("5m").encrypt(configuration.cookieSecret);
   const endpoint = new URL(configuration.authorizationEndpoint);
-  endpoint.search = new URLSearchParams({ response_type: "code", client_id: configuration.clientId, redirect_uri: configuration.callbackUrl, scope: "openid profile email", state, code_challenge: challenge, code_challenge_method: "S256" }).toString();
+  endpoint.search = new URLSearchParams({ response_type: "code", client_id: configuration.clientId, redirect_uri: configuration.callbackUrl, scope: configuration.scopes, state, code_challenge: challenge, code_challenge_method: "S256" }).toString();
   return { location: endpoint.toString(), setCookie: cookieHeader(transientCookieName, transient, 300, secureCookie) };
 }
 

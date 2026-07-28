@@ -7,6 +7,7 @@ import { readBoundedPdf } from "./upload.ts";
 import type { DocumentType } from "../../../packages/canonical-tax-model/src/index.ts";
 import { PostgresDocumentPersistence, PostgresTenantDatabase, postgresConfigFromEnvironment } from "./postgres.ts";
 import { requirePermission } from "../../../packages/authz/src/index.ts";
+import { serveStaticSite } from "./static-site.ts";
 
 const port = Number(process.env.PORT ?? 3001);
 const json = (response: import("node:http").ServerResponse, body: object, status = 200, headers: Record<string, string> = {}) => {
@@ -106,6 +107,10 @@ const server = createServer((request, response) => {
     return;
   }
 
+  if (request.method === "GET" || request.method === "HEAD") {
+    void serveStaticSite(url.pathname, response, request.method).then((served) => { if (!served) json(response, { error: "not_found" }, 404); });
+    return;
+  }
   return json(response, { error: "not_found" }, 404);
 });
 server.listen(port, "127.0.0.1", () => console.log(`Rovyniq API listening on ${port}`));

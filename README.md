@@ -16,6 +16,8 @@ Read [docs/START_HERE.md](docs/START_HERE.md), then [docs/handover/CURRENT_STATE
 
 GitHub Pages can deploy the static preview automatically from `main` using `.github/workflows/deploy-pages.yml`. In repository **Settings to Pages**, select **GitHub Actions** as the publishing source. It will publish at `https://jadax.github.io/Rovyniq/` if the repository is public and Pages is enabled. This is strictly a no-data preview, not an upload or filing service.
 
+For a two-person private household pilot without Docker or public compute, see [the Windows + Tailscale guide](docs/operations/PRIVATE_PILOT_TAILSCALE.md). It is not a public deployment.
+
 ## Architecture
 
 `packages/canonical-tax-model` owns evidence-linked return data. `packages/tax-rules` owns year-versioned statutory configuration. `packages/tax-engine` owns deterministic calculations and reconciliation. Adapters, UI, persistence and extraction depend inward on these packages.

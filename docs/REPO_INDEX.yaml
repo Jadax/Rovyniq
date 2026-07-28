@@ -60,6 +60,11 @@ domains:
     interfaces: [GET /v1/session, protected return landing]
     tests: []
     adrs: [ADR-0005]
+  private_pilot_delivery:
+    authoritative_files: [apps/api/src/static-site.ts, docs/operations/PRIVATE_PILOT_TAILSCALE.md]
+    interfaces: [same-origin allowlisted web delivery, Tailscale private HTTPS edge]
+    tests: [apps/api/src/static-site.test.ts]
+    adrs: [ADR-0003, ADR-0005]
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]

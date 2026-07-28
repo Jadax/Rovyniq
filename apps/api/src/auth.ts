@@ -21,7 +21,10 @@ export function extractBearerToken(authorization: string | undefined): string | 
 function rolesFromClaims(payload: JWTPayload): readonly Role[] {
   const claimedRoles = [
     ...(Array.isArray(payload.roles) ? payload.roles : []),
-    ...(typeof payload.realm_access === "object" && payload.realm_access && Array.isArray(payload.realm_access.roles) ? payload.realm_access.roles : [])
+    ...(typeof payload.realm_access === "object" && payload.realm_access && Array.isArray(payload.realm_access.roles) ? payload.realm_access.roles : []),
+    ...Object.entries(payload)
+      .filter(([claim]) => claim === "urn:zitadel:iam:org:project:roles" || /^urn:zitadel:iam:org:project:[^:]+:roles$/.test(claim))
+      .flatMap(([, value]) => typeof value === "object" && value && !Array.isArray(value) ? Object.keys(value) : [])
   ];
   return claimedRoles.filter((role): role is Role => typeof role === "string" && recognisedRoles.has(role as Role));
 }
@@ -29,7 +32,12 @@ function rolesFromClaims(payload: JWTPayload): readonly Role[] {
 export async function verifyAccessTokenWithKeySet(token: string, configuration: OidcConfig, keySet: JWTVerifyGetKey): Promise<Principal> {
   const { payload } = await jwtVerify(token, keySet, { issuer: configuration.issuer, audience: configuration.audience });
   if (!payload.sub) throw new Error("OIDC token is missing subject.");
-  return { subject: payload.sub, organisationId: typeof payload.organisation_id === "string" ? payload.organisation_id : undefined, roles: rolesFromClaims(payload), verifiedBy: "oidc" };
+  return {
+    subject: payload.sub,
+    organisationId: typeof payload.organisation_id === "string" ? payload.organisation_id : typeof payload["urn:zitadel:iam:user:resourceowner:id"] === "string" ? payload["urn:zitadel:iam:user:resourceowner:id"] : undefined,
+    roles: rolesFromClaims(payload),
+    verifiedBy: "oidc"
+  };
 }
 
 export async function verifyAccessToken(token: string, configuration: OidcConfig): Promise<Principal> {

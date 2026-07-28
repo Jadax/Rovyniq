@@ -4,7 +4,7 @@ import { browserCookies, createAuthorizationRedirect, createSessionCookie, readA
 
 const configuration: BrowserOidcConfig = {
   issuer: "https://identity.example.test/realms/rovyniq", audience: "rovyniq-api", jwksUri: "https://identity.example.test/keys",
-  clientId: "rovyniq-web", callbackUrl: "https://app.example.test/v1/auth/callback", authorizationEndpoint: "https://identity.example.test/authorize", tokenEndpoint: "https://identity.example.test/token", cookieSecret: new Uint8Array(32).fill(7)
+  clientId: "rovyniq-web", callbackUrl: "https://app.example.test/v1/auth/callback", authorizationEndpoint: "https://identity.example.test/authorize", tokenEndpoint: "https://identity.example.test/token", scopes: "openid profile email", cookieSecret: new Uint8Array(32).fill(7)
 };
 
 test("OIDC browser flow uses PKCE and binds the state to an encrypted short-lived cookie", async () => {

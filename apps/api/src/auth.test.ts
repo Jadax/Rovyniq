@@ -16,6 +16,16 @@ test("bearer extraction fails closed", () => {
   assert.equal(extractBearerToken("Basic credentials"), null);
   assert.equal(extractBearerToken(undefined), null);
 });
+test("OIDC verifier maps asserted ZITADEL project roles and resource owner", async () => {
+  const { privateKey, publicKey } = await generateKeyPair("ES256");
+  const publicJwk = await exportJWK(publicKey); publicJwk.kid = "key-zitadel";
+  const token = await new SignJWT({
+    "urn:zitadel:iam:org:project:roles": { taxpayer: { "org-1": "astraiva.example" }, ignored: { "org-1": "astraiva.example" } },
+    "urn:zitadel:iam:user:resourceowner:id": "org-1"
+  }).setProtectedHeader({ alg: "ES256", kid: "key-zitadel" }).setIssuer(config.issuer).setAudience(config.audience).setSubject("user-zitadel").setIssuedAt().setExpirationTime("5m").sign(privateKey);
+  const principal = await verifyAccessTokenWithKeySet(token, config, createLocalJWKSet({ keys: [publicJwk] }));
+  assert.deepEqual(principal, { subject: "user-zitadel", organisationId: "org-1", roles: ["taxpayer"], verifiedBy: "oidc" });
+});
 test("OIDC verifier rejects a token for another audience", async () => {
   const { privateKey, publicKey } = await generateKeyPair("ES256");
   const publicJwk = await exportJWK(publicKey); publicJwk.kid = "key-2";
