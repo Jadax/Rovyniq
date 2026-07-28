@@ -13,6 +13,13 @@ export interface ReturnWorkspace { id: string; assessmentYear: AssessmentYear; s
 export interface TaxpayerDeclaration { snapshotHash: string; acceptedAt: string; actorId: string; wordingVersion: string; }
 export interface TaxBreakdownLine { id: "income" | "deductions" | "taxable_income" | "normal_tax" | "rebates_and_credits" | "paye" | "estimated_balance"; label: string; amount: number; direction: "increase" | "reduce" | "result"; source: DataSource | "mixed"; evidenceRequired: boolean; }
 
+export type InterviewAnswerValue = string | number | boolean | null;
+export interface InterviewAnswer { questionKey: string; value: InterviewAnswerValue; updatedAt: string; }
+export type QuestionType = "yesno" | "text" | "number" | "currency" | "date" | "select" | "codes" | "info" | "section_gate";
+export interface QuestionField { id: string; type: QuestionType; text: string; helpText?: string; placeholder?: string; sourceCodes?: string[]; validation?: { pattern?: string; message?: string; min?: number; max?: number }; options?: { label: string; value: string }[]; suffix?: string; }
+export interface QuestionSection { id: string; title: string; description: string; icon: string; gateQuestion: { id: string; text: string; helpText?: string }; allowMultiple: boolean; multipleLabel?: string; fields: QuestionField[]; }
+export const defaultAnswers: Record<string, InterviewAnswerValue> = {};
+
 export const transitionReturn = (from: ReturnState, to: ReturnState): boolean => ({
   DRAFT: ["DATA_COLLECTION"], DATA_COLLECTION: ["DOCUMENT_REVIEW", "CALCULATION_READY"], DOCUMENT_REVIEW: ["DATA_COLLECTION", "CALCULATION_READY"], CALCULATION_READY: ["VALIDATION_BLOCKED", "READY_FOR_REVIEW"], VALIDATION_BLOCKED: ["DATA_COLLECTION"], READY_FOR_REVIEW: ["TAXPAYER_APPROVED"], TAXPAYER_APPROVED: ["SUBMISSION_PENDING"], SUBMISSION_PENDING: ["SUBMITTED"], SUBMITTED: ["ASSESSED", "VERIFICATION_REQUESTED"], ASSESSED: ["FINALISED", "CORRECTION_IN_PROGRESS"], VERIFICATION_REQUESTED: ["SUPPORTING_DOCS_SUBMITTED"], SUPPORTING_DOCS_SUBMITTED: ["ASSESSED"], FINALISED: ["CORRECTION_IN_PROGRESS"], CORRECTION_IN_PROGRESS: ["DATA_COLLECTION"]
 }[from] ?? []).includes(to);

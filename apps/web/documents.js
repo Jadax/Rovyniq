@@ -75,10 +75,5 @@ form.addEventListener("submit", async (event) => {
 
 loadDocuments().catch(() => { list.replaceChildren(Object.assign(document.createElement("li"), { className: "empty-state", textContent: "Your document library is temporarily unavailable." })); });
 
-async function loadInterview() {
-  const target = document.querySelector("#question-groups"); if (!validWorkspace() || !target) return;
-  const [questionsResponse, answersResponse] = await Promise.all([fetch("/v1/itr12/interview", { credentials: "same-origin" }), fetch(`/v1/workspaces/${workspace}/answers`, { credentials: "same-origin" })]); if (!questionsResponse.ok || !answersResponse.ok) return;
-  const answers = new Map((await answersResponse.json()).answers.map((answer) => [answer.questionKey, answer.value]));
-  target.replaceChildren(...(await questionsResponse.json()).questions.map((question, index) => { const item = document.createElement("li"), number = document.createElement("span"), body = document.createElement("div"), heading = document.createElement("h3"), prompt = document.createElement("p"), controls = document.createElement("div"); number.className = "step-number"; number.textContent = String(index + 1).padStart(2, "0"); heading.textContent = question.section; prompt.textContent = question.prompt; controls.className = "answer-controls"; for (const value of [true, false]) { const button = document.createElement("button"); button.type = "button"; button.className = "secondary"; button.textContent = value ? "Yes" : "No"; if (answers.get(question.key) === value) button.classList.add("selected"); button.addEventListener("click", async () => { await fetch(`/v1/workspaces/${workspace}/answers`, { method: "PUT", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify({ questionKey: question.key, value }) }); await loadInterview(); }); controls.append(button); } body.append(heading, prompt, controls); item.append(number, body); return item; }));
-}
-loadInterview().catch(() => {});
+const interviewLink = document.querySelector(".interview-cta a");
+if (interviewLink && validWorkspace()) interviewLink.href += `?workspace=${encodeURIComponent(workspace)}`;

@@ -13,11 +13,16 @@ const assets = new Map<string, { file: string; contentType: string }>([
   ["/app.html", { file: "app.html", contentType: "text/html; charset=utf-8" }],
   ["/documents", { file: "documents.html", contentType: "text/html; charset=utf-8" }],
   ["/documents.html", { file: "documents.html", contentType: "text/html; charset=utf-8" }],
+  ["/interview", { file: "interview.html", contentType: "text/html; charset=utf-8" }],
+  ["/interview.html", { file: "interview.html", contentType: "text/html; charset=utf-8" }],
   ["/styles.css", { file: "styles.css", contentType: "text/css; charset=utf-8" }],
   ["/workspace.css", { file: "workspace.css", contentType: "text/css; charset=utf-8" }],
   ["/documents.css", { file: "documents.css", contentType: "text/css; charset=utf-8" }],
+  ["/interview.css", { file: "interview.css", contentType: "text/css; charset=utf-8" }],
   ["/app.js", { file: "app.js", contentType: "text/javascript; charset=utf-8" }],
-  ["/documents.js", { file: "documents.js", contentType: "text/javascript; charset=utf-8" }]
+  ["/documents.js", { file: "documents.js", contentType: "text/javascript; charset=utf-8" }],
+  ["/interview.js", { file: "interview.js", contentType: "text/javascript; charset=utf-8" }],
+  ["/pdf-extract.js", { file: "pdf-extract.js", contentType: "text/javascript; charset=utf-8" }]
 ]);
 
 export function staticAsset(pathname: string): { file: string; contentType: string } | undefined {
@@ -32,7 +37,7 @@ export async function serveStaticSite(pathname: string, response: ServerResponse
     response.writeHead(200, {
       "content-type": asset.contentType,
       "cache-control": "no-store",
-      "content-security-policy": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'",
+      "content-security-policy": "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; worker-src 'self' https://cdnjs.cloudflare.com; connect-src 'self'",
       "referrer-policy": "strict-origin-when-cross-origin",
       "permissions-policy": "camera=(), microphone=(), geolocation=()",
       "x-content-type-options": "nosniff"

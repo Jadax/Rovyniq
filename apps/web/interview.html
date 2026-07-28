@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Rovyniq guided ITR12 interview - answer questions about your tax year.">
+  <link rel="stylesheet" href="interview.css">
+  <title>Rovyniq: Your 2026 ITR12 interview</title>
+</head>
+<body>
+  <a class="skip-link" href="#interview-content">Skip to interview</a>
+  <header class="app-header">
+    <a class="brand" href="index.html">Rovyniq<span>.</span></a>
+    <span class="year-label">2026 ITR12</span>
+    <div class="header-right">
+      <span id="progress-label" class="progress-label">0 of 15 sections</span>
+      <button id="sign-out" class="secondary small" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <div class="interview-shell">
+    <aside class="section-nav" aria-label="Interview sections">
+      <p class="nav-label">Categories</p>
+      <ul id="section-list"></ul>
+      <div class="nav-footer">
+        <a href="documents.html" class="back-link">&larr; Back to documents</a>
+      </div>
+    </aside>
+
+    <main id="interview-content" class="interview-main">
+      <div id="gate-section" class="gate-panel"></div>
+      <div id="fields-section" class="fields-panel" hidden></div>
+      <div id="completion-panel" class="completion-panel" hidden>
+        <div class="completion-icon">&#10003;</div>
+        <h2>All sections complete</h2>
+        <p>You have answered all the questions for your 2026 ITR12. Review your answers below before proceeding.</p>
+        <button id="review-all" class="primary" type="button">Review all answers</button>
+        <a href="documents.html" class="text-link">&larr; Back to documents</a>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="interview.js"></script>
+</body>
+</html>
