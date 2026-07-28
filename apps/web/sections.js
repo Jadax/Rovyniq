@@ -12,7 +12,7 @@ export const sections = [
     allowMultiple: false,
     fields: [
       { id: "full_name", type: "text", text: "What's your full name as it appears on your ID document?", placeholder: "e.g. Tushant Sharma", helpText: "This must match your South African ID document exactly." },
-      { id: "id_number", type: "text", text: "Your South African ID number.", placeholder: "e.g. 900101 1234 089", helpText: "13 digits — you'll find this on your ID book or smart ID card.", validation: { pattern: "^[0-9]{13}$", message: "South African ID numbers are 13 digits long." } },
+      { id: "id_number", type: "text", text: "Your South African ID number.", placeholder: "e.g. 900101 1234 089", helpText: "13 digits - you'll find this on your ID book or smart ID card.", validation: { pattern: "^[0-9]{13}$", message: "South African ID numbers are 13 digits long." } },
       { id: "tax_reference_number", type: "text", text: "Your SARS tax reference number.", placeholder: "e.g. 1234567890", helpText: "This is the 8-10 digit number SARS uses to identify you. You'll find it on your IRP5 or previous assessments." },
       { id: "date_of_birth", type: "date", text: "Your date of birth.", placeholder: "DD/MM/YYYY" },
       { id: "contact_number", type: "text", text: "Your cellphone number.", placeholder: "e.g. 082 123 4567", helpText: "SARS will use this to contact you if needed." },
@@ -35,7 +35,7 @@ export const sections = [
     icon: "🏠",
     gateQuestion: {
       id: "ready_marital",
-      text: "Let's talk about your home situation. Your marital status affects how SARS sees your income and deductions — shall we fill this in?",
+      text: "Let's talk about your home situation. Your marital status affects how SARS sees your income and deductions - shall we fill this in?",
       helpText: "If you got married or divorced during the tax year, we need to know so we can split income correctly."
     },
     allowMultiple: false,
@@ -71,14 +71,14 @@ export const sections = [
       { id: "certificate_number", type: "text", text: "Certificate number from your IRP5.", placeholder: "e.g. 770080188120260221000000000027", helpText: "A long number near the top of your IRP5." },
       { id: "paye_reference", type: "text", text: "Your employer's PAYE reference number.", placeholder: "e.g. 7700801881", helpText: "Starts with a 7 and is 10 digits. You'll find this on your IRP5.", validation: { pattern: "^[0-9]{10}$", message: "10 digits only, starting with 7." } },
       { id: "income_salary", type: "currency", text: "Your salary or wages (code 3601).", sourceCodes: ["3601"], helpText: "This is your basic salary before tax and deductions." },
-      { id: "income_non_taxable", type: "currency", text: "Any non-taxable income (code 3602).", sourceCodes: ["3602"], helpText: "Only if it appears on your IRP5 — most people leave this at R0." },
+      { id: "income_non_taxable", type: "currency", text: "Any non-taxable income (code 3602).", sourceCodes: ["3602"], helpText: "Only if it appears on your IRP5 - most people leave this at R0." },
       { id: "income_pension", type: "currency", text: "Pension income (code 3603) if you're retired.", sourceCodes: ["3603"] },
       { id: "income_annual_payment", type: "currency", text: "Annual payment or bonus (code 3605).", sourceCodes: ["3605"], helpText: "Things like 13th cheques, performance bonuses, or annual payouts." },
-      { id: "tip_multiple_employers", type: "info", text: "💡 <strong>Did you change jobs this year?</strong> If you had more than one employer, add each IRP5 certificate separately using the \"Add another\" button. SARS needs them all to calculate your tax correctly — missing one could mean missing out on PAYE refund." },
-      { id: "gross_income", type: "currency", text: "Your total gross employment income (code 3699).", sourceCodes: ["3699"], helpText: "This is the big number — your total taxable earnings from this employer." },
+      { id: "tip_multiple_employers", type: "info", text: "If you changed jobs during the year, add each employer's IRP5 separately using the \"Add another\" button. SARS needs all of them to calculate your tax properly - missing one could cost you a PAYE refund." },
+      { id: "gross_income", type: "currency", text: "Your total gross employment income (code 3699).", sourceCodes: ["3699"], helpText: "This is the big number - your total taxable earnings from this employer." },
       { id: "paye_deducted", type: "currency", text: "PAYE (Employees Tax) deducted (code 4102).", sourceCodes: ["4102"], helpText: "This is the tax your employer already paid to SARS on your behalf." },
-      { id: "uif_deducted", type: "currency", text: "UIF contribution (code 4141).", sourceCodes: ["4141"], helpText: "Unemployment Insurance Fund — both you and your employer contribute." },
-      { id: "sdl_deducted", type: "currency", text: "Skills Development Levy (code 4142).", sourceCodes: ["4142"], helpText: "Your employer pays this — it's not deducted from your salary." },
+      { id: "uif_deducted", type: "currency", text: "UIF contribution (code 4141).", sourceCodes: ["4141"], helpText: "Unemployment Insurance Fund - both you and your employer contribute." },
+      { id: "sdl_deducted", type: "currency", text: "Skills Development Levy (code 4142).", sourceCodes: ["4142"], helpText: "Your employer pays this - it's not deducted from your salary." },
       { id: "medical_credit_on_irp5", type: "currency", text: "Medical scheme tax credit from your IRP5 (code 4116).", sourceCodes: ["4116"], helpText: "This amount goes toward your medical credit. We'll ask about medical details later too." },
       { id: "retirement_fund_contrib", type: "currency", text: "Retirement fund contributions from your salary (code 4001 or 4005).", sourceCodes: ["4001","4005"], helpText: "This is what your employer deducted from your pay for pension/provident/medical." },
       { id: "periods_employed", type: "number", text: "How many months did you work for this employer?", placeholder: "e.g. 12", helpText: "Look for 'Periods in Year' or 'Periods Worked' on your IRP5." },
@@ -95,7 +95,7 @@ export const sections = [
     gateQuestion: {
       id: "has_business_income",
       text: "Did you run your own business, freelance, do contract work, or earn money outside of a regular job? This includes being a director of your own company, a sole proprietor, or an independent contractor.",
-      helpText: "If you earned money from Uber, TikTok, freelancing, consulting, or your own small business — this section is for you."
+      helpText: "If you earned money from Uber, TikTok, freelancing, consulting, or your own small business - this section is for you."
     },
     allowMultiple: false,
     fields: [
@@ -110,7 +110,7 @@ export const sections = [
       { id: "business_registration_number", type: "text", text: "Business registration number (if registered).", placeholder: "e.g. 2020/123456/07" },
       { id: "total_income", type: "currency", text: "Total income from your business or freelance work for the year.", helpText: "This is everything you earned before expenses." },
       { id: "total_expenses", type: "currency", text: "Total expenses you incurred to run your business.", helpText: "Things like materials, equipment, software, transport, marketing, and subcontractors." },
-      { id: "tip_biz_expenses", type: "info", text: "💡 <strong>Common expenses people miss:</strong> Cellphone and internet (business portion), home office if you work from home, vehicle expenses for business travel, accounting fees, bank charges, software subscriptions, training and courses, office supplies, and business insurance. Every legitimate expense reduces your tax." },
+      { id: "tip_biz_expenses", type: "info", text: "People often forget to claim things like their business cellphone and internet usage, training courses, accounting fees, bank charges, software subscriptions, and business insurance. If you used it for your business, it's probably deductible." },
       { id: "profit_or_loss", type: "select", text: "Did you make a profit or a loss?", options: [
         { label: "Profit (income was more than expenses)", value: "profit" },
         { label: "Loss (expenses were more than income)", value: "loss" }
@@ -126,11 +126,11 @@ export const sections = [
     gateQuestion: {
       id: "has_investment_income",
       text: "Did you earn interest on savings, receive dividends from shares, or get any investment payouts during the year? This includes bank account interest, fixed deposits, unit trusts, ETFs, and REITs.",
-      helpText: "Interest from a Tax Free Savings Account (TFSA) goes in a separate section — don't include it here."
+      helpText: "Interest from a Tax Free Savings Account (TFSA) goes in a separate section - don't include it here."
     },
     allowMultiple: false,
     fields: [
-      { id: "tip_interest_exemption", type: "info", text: "💡 <strong>Good news:</strong> The first R23,800 of local interest is tax-free if you're under 65 (R34,500 if 65+). Only interest above this threshold gets taxed. You still need to declare it all — SARS will apply the exemption automatically." },
+      { id: "tip_interest_exemption", type: "info", text: "The first R23,800 of local interest is tax-free if you're under 65 (R34,500 if you're 65+). Only interest above that threshold actually gets taxed. Declare everything - SARS applies the exemption automatically." },
       { id: "local_interest", type: "currency", text: "Local interest earned (code 4201/4202).", sourceCodes: ["4201","4202"], helpText: "This is interest from your bank accounts, fixed deposits, and savings. You'll get an IT3(b) certificate from your bank." },
       { id: "foreign_interest", type: "currency", text: "Foreign interest earned (code 4203).", sourceCodes: ["4203"], helpText: "Interest from foreign bank accounts or investments." },
       { id: "local_dividends", type: "currency", text: "South African dividends received (code 4204).", sourceCodes: ["4204"], helpText: "Dividends from South African companies you own shares in." },
@@ -147,7 +147,7 @@ export const sections = [
     icon: "💰",
     gateQuestion: {
       id: "has_tfsa",
-      text: "Did you put money into a Tax Free Savings Account (TFSA) this year? These are special accounts where your growth is tax-free — but SARS still needs to track your contributions.",
+      text: "Did you put money into a Tax Free Savings Account (TFSA) this year? These are special accounts where your growth is tax-free - but SARS still needs to track your contributions.",
       helpText: "A TFSA is NOT a retirement annuity or a normal savings account. You should have an IT3(s) certificate from your provider (EasyEquities, Nedbank, etc.)."
     },
     allowMultiple: true,
@@ -156,7 +156,7 @@ export const sections = [
       { id: "institution_name", type: "text", text: "Which company holds your TFSA?", placeholder: "e.g. EasyEquities, Nedbank", helpText: "Check your IT3(s) certificate." },
       { id: "account_number", type: "text", text: "Your TFSA account or policy number.", placeholder: "e.g. EE764203-4589673" },
       { id: "investment_type", type: "text", text: "What type of TFSA is it?", placeholder: "e.g. TFSA, Tax Free Investment", helpText: "It should say on your statement." },
-      { id: "total_contributions", type: "currency", text: "Total contributions you made this tax year (code 4219).", sourceCodes: ["4219"], helpText: "This is what you put in — SARS limits this to R36,000 per year." },
+      { id: "total_contributions", type: "currency", text: "Total contributions you made this tax year (code 4219).", sourceCodes: ["4219"], helpText: "This is what you put in - SARS limits this to R36,000 per year." },
       { id: "interest_earned", type: "currency", text: "Interest earned inside your TFSA (code 4241).", sourceCodes: ["4241"] },
       { id: "dividends_earned", type: "currency", text: "Dividends earned inside your TFSA (code 4242).", sourceCodes: ["4242"] },
       { id: "withdrawals", type: "currency", text: "Any withdrawals from your TFSA (code 4248).", sourceCodes: ["4248"], helpText: "You can withdraw anytime, but you can't replace it without using your annual limit." },
@@ -214,7 +214,7 @@ export const sections = [
     icon: "📊",
     gateQuestion: {
       id: "has_capital_gains",
-      text: "Did you sell any assets during the year — like shares, crypto, a property, or a business? If you sold something for more than you originally paid, that's a capital gain (or a loss if you sold for less).",
+      text: "Did you sell any assets during the year - like shares, crypto, a property, or a business? If you sold something for more than you originally paid, that's a capital gain (or a loss if you sold for less).",
       helpText: "You don't need to include personal stuff like your car or household goods. Think about: shares, ETFs, crypto, investment properties, or a business you sold."
     },
     allowMultiple: false,
@@ -222,7 +222,7 @@ export const sections = [
       { id: "asset_description", type: "text", text: "What did you sell?", placeholder: "e.g. Shares in Capitec, Ethereum, Investment property", helpText: "Give a brief description of the main assets you sold." },
       { id: "proceeds", type: "currency", text: "Total proceeds from the sale (what you received).", helpText: "The total amount you got from selling." },
       { id: "base_cost", type: "currency", text: "Total base cost (what you originally paid).", helpText: "What you originally paid for the asset, plus any costs to buy and sell it (broker fees, transfer costs, etc.)." },
-      { id: "tip_cgt_exclusion", type: "info", text: "💡 <strong>Capital gains tax exclusion:</strong> The first R40,000 of capital gain is tax-free each year (R2,000,000 if you sold your primary home). Losses can be carried forward to offset future gains. If you sold crypto, shares, or an investment property, make sure you declare it — even if you think the gain is small." },
+      { id: "tip_cgt_exclusion", type: "info", text: "The first R40,000 of capital gain is tax-free each year (R2 million if you sold your primary home). You can carry forward losses to offset future gains. If you sold crypto, shares, or an investment property this year, declare it even if you think the gain is tiny - SARS already has data from the platforms." },
       { id: "capital_gain", type: "currency", text: "Total capital gain (code 4250).", sourceCodes: ["4250"], helpText: "If you have an IT3(c) certificate from your broker or investment platform, use the amounts there." },
       { id: "capital_loss", type: "currency", text: "Total capital loss (code 4251).", sourceCodes: ["4251"], helpText: "If you sold some things at a loss, enter the total here." }
     ]
@@ -243,7 +243,7 @@ export const sections = [
       { id: "fund_name", type: "text", text: "Which retirement fund did you contribute to?", placeholder: "e.g. Allan Gray Retirement Annuity Fund", helpText: "You'll find this on your IT3(f) tax certificate." },
       { id: "policy_number", type: "text", text: "Your policy or membership number.", placeholder: "e.g. 784943", helpText: "Also on your IT3(f) certificate." },
       { id: "total_contribution", type: "currency", text: "Total you contributed this tax year (code 4006).", sourceCodes: ["4006"], helpText: "The total amount you paid in. SARS will check this against your IT3(f)." },
-      { id: "tip_retirement_limit", type: "info", text: "💡 <strong>Tax-saving limit:</strong> SARS lets you deduct up to 27.5% of your total income (salary + business + investment) for retirement contributions, capped at R350,000 per year. If you haven't hit that limit, you can still make last-minute contributions and claim them for this tax year — every rand saved from tax is a rand in your pocket." },
+      { id: "tip_retirement_limit", type: "info", text: "SARS lets you deduct retirement contributions up to 27.5% of your total income (salary, business, and investment income combined), capped at R350,000 per year. If you haven't hit that limit yet, you can still make a last-minute contribution and claim it for this tax year." },
       { id: "contribution_type", type: "select", text: "What kind of contribution is this?", options: [
         { label: "Retirement Annuity Fund (RAF)", value: "raf" },
         { label: "Voluntary pension fund contribution", value: "pension" },
@@ -279,7 +279,7 @@ export const sections = [
       { id: "members_count", type: "text", text: "Number of people on your plan each month (e.g. just you, you + 1 dependent, or whole family).", placeholder: "Type like: Mar:2, Apr:2, ..., Feb:2", helpText: "SARS needs this for each month to calculate your tax credit correctly." },
       { id: "total_contributions_paid", type: "currency", text: "Total medical aid contributions for the year (code 4005).", sourceCodes: ["4005"], helpText: "The total you (or your employer) paid to the medical scheme for the full year." },
       { id: "employer_paid_contributions", type: "currency", text: "Amount your employer paid toward your medical aid.", helpText: "If your employer pays part or all of your medical aid, enter that amount here (code 4005 on your IRP5)." },
-      { id: "tip_qme", type: "info", text: "💡 <strong>Don't forget qualifying medical expenses (QMEs).</strong> These are out-of-pocket costs your medical aid didn't cover — and they can add up. Common ones: doctor consultation fees, prescribed medication, dentist & orthodontist, optometrist & glasses, psychologist/physio/occupational therapy, hospital co-payments, travel to medical appointments, and medical aids not covered by your plan. Keep your receipts — SARS may ask for them." },
+      { id: "tip_qme", type: "info", text: "Qualifying medical expenses are the out-of-pocket costs your medical aid didn't cover - doctor visits, prescribed meds, dentist, glasses, therapy, hospital co-payments, even travel to appointments. These add up fast and you can claim them. Keep your receipts though, SARS may ask to see them." },
       { id: "qualifying_expenses", type: "currency", text: "Out-of-pocket medical expenses not covered by your medical aid.", helpText: "Think about: doctor visits not covered, prescribed medication, dentist, optometrist, therapy, hospital co-payments." },
       { id: "disability_expenses", type: "yesno", text: "Do any of these expenses relate to a physical impairment or disability as approved by SARS?" },
       { id: "disability_expenses_amount", type: "currency", text: "Expenses related to the disability.", helpText: "If you or a family member has a SARS-approved disability, the threshold is lower for claiming." }
@@ -302,7 +302,7 @@ export const sections = [
       { id: "vehicle_cost", type: "currency", text: "Original purchase price of the vehicle (including VAT).", helpText: "Check your purchase agreement or logbook." },
       { id: "total_kilometers", type: "number", text: "Total kilometers driven for the year.", suffix: "km" },
       { id: "business_kilometers", type: "number", text: "Business kilometers (not personal travel).", suffix: "km", helpText: "Only the kilometers you drove for work purposes." },
-      { id: "tip_logbook", type: "info", text: "💡 <strong>Logbook vs simplified method:</strong> If you kept a logbook, you can claim actual expenses (fuel, maintenance, insurance, depreciation) based on your business-use percentage. If you didn't keep a logbook, SARS uses a fixed rate per business kilometer — which is often less. A proper logbook almost always saves you more tax." },
+      { id: "tip_logbook", type: "info", text: "If you kept a logbook you can claim actual costs (fuel, maintenance, insurance, depreciation) based on your business-use percentage. Without a logbook, SARS uses a fixed rate per business kilometer - and the fixed rate usually works out lower. A proper logbook almost always saves you more." },
       { id: "kept_logbook", type: "yesno", text: "Did you keep a logbook of your business travel?" },
       { id: "fuel_cost", type: "currency", text: "Total fuel cost for the year.", helpText: "If you have the records." },
       { id: "maintenance_cost", type: "currency", text: "Total maintenance and repair costs for the year." }
@@ -323,7 +323,7 @@ export const sections = [
       { id: "works_from_home", type: "yesno", text: "Do you work from home (even part of the time)?" },
       { id: "home_office_area", type: "number", text: "How big is your home office?", suffix: "m²", helpText: "Measure the room or area you use exclusively for work." },
       { id: "home_total_area", type: "number", text: "How big is your whole home?", suffix: "m²", helpText: "Total floor area so we can work out the business percentage." },
-      { id: "tip_home_office", type: "info", text: "💡 <strong>Home office claims add up.</strong> You can claim a portion of: rent or bond interest, electricity and water, internet and Wi-Fi, cleaning, rates and taxes, and security. The deductible portion = (office size / total home size) × total costs. You must have a dedicated room used exclusively for work, and your employer must not provide the workspace." },
+      { id: "tip_home_office", type: "info", text: "You can claim a portion of your rent or bond interest, electricity, water, internet, cleaning, rates and security. The deductible amount is (office size / total home size) x total costs. You need a dedicated room used only for work, and your employer must not already provide a workspace for you." },
       { id: "home_office_expenses", type: "currency", text: "Total home office costs (rent/mortgage interest, electricity, internet, cleaning).", helpText: "We'll work out the business portion based on your office size." },
       { id: "equipment_costs", type: "currency", text: "Cost of work equipment (laptop, printer, phone, software).", helpText: "Things you bought for work that your employer didn't pay for." },
       { id: "uniform_costs", type: "currency", text: "Cost of uniforms or protective clothing.", helpText: "Only if your employer requires you to wear a specific uniform." },
@@ -357,7 +357,7 @@ export const sections = [
     gateQuestion: {
       id: "has_other_deductions",
       text: "Do you have any other expenses you think should be tax deductible? Things like legal fees related to your job, bad debts, or contributions to an employee share scheme.",
-      helpText: "This is for less common deductions. If you're not sure, skip this section — you can always come back."
+      helpText: "This is for less common deductions. If you're not sure, skip this section - you can always come back."
     },
     allowMultiple: false,
     fields: [
@@ -375,7 +375,7 @@ export const sections = [
     icon: "🧘",
     gateQuestion: {
       id: "wants_checkup",
-      text: "Want a quick, no-judgment financial health check? This is completely optional — answer a few quick questions and we'll give you some pointers.",
+      text: "Want a quick, no-judgment financial health check? This is completely optional - answer a few quick questions and we'll give you some pointers.",
       helpText: "This has nothing to do with your tax return. Just useful perspective on your financial habits."
     },
     allowMultiple: false,

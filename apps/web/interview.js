@@ -14,7 +14,12 @@ let activeInstance = 0;
 const extractor = new PdfExtractor();
 
 function getKey(sectionId, instance, fieldId) {
-  if (fieldId) return instance > 0 ? `${sectionId}_${instance}_${fieldId}` : `${sectionId}_${fieldId}`;
+  if (fieldId !== undefined && fieldId !== null) {
+    if (fieldId === "") {
+      return instance > 0 ? `${sectionId}_${instance}_` : `${sectionId}_`;
+    }
+    return instance > 0 ? `${sectionId}_${instance}_${fieldId}` : `${sectionId}_${fieldId}`;
+  }
   return instance > 0 ? `${sectionId}_${instance}` : sectionId;
 }
 
@@ -630,7 +635,7 @@ function renderFullReview() {
 
     const div = document.createElement("div");
     div.className = "review-panel";
-    div.innerHTML = `<h3>${section.icon} ${section.title} — ${gateYes ? "Yes" : "No / Not applicable"}</h3>`;
+    div.innerHTML = `<h3>${section.icon} ${section.title} - ${gateYes ? "Yes" : "No / Not applicable"}</h3>`;
 
     if (gateYes) {
       const maxInst = section.allowMultiple ? activeInstance : 0;
