@@ -18,6 +18,8 @@ GitHub Pages can deploy the static preview automatically from `main` using `.git
 
 For a two-person private household pilot without Docker or public compute, see [the Windows + Tailscale guide](docs/operations/PRIVATE_PILOT_TAILSCALE.md) and [its minimal local configuration template](.env.pilot.example). It is not a public deployment.
 
+For an always-on public deployment that does not depend on a local computer, use the managed [Cloud Run deployment guide](docs/operations/CLOUD_RUN_DEPLOYMENT.md). Cloud Build builds the repository Dockerfile remotely; Docker Desktop is not required.
+
 ## Architecture
 
 `packages/canonical-tax-model` owns evidence-linked return data. `packages/tax-rules` owns year-versioned statutory configuration. `packages/tax-engine` owns deterministic calculations and reconciliation. Adapters, UI, persistence and extraction depend inward on these packages.

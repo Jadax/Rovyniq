@@ -65,6 +65,10 @@ domains:
     interfaces: [same-origin allowlisted web delivery, Tailscale private HTTPS edge]
     tests: [apps/api/src/static-site.test.ts]
     adrs: [ADR-0003, ADR-0005]
+  cloud_run_delivery:
+    authoritative_files: [Dockerfile, apps/api/src/server.ts, docs/operations/CLOUD_RUN_DEPLOYMENT.md]
+    interfaces: [Cloud Run managed API delivery, remote Docker build]
+    tests: []
   edge-api:
     authoritative_files: [apps/edge-api/src/index.ts, apps/edge-api/wrangler.jsonc]
     interfaces: [Worker.fetch]

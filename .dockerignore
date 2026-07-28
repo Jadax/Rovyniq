@@ -1,0 +1,10 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+!.env.pilot.example
+node_modules
+coverage
+uploads
+*.pem

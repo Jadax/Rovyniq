@@ -133,4 +133,5 @@ const server = createServer((request, response) => {
   }
   return json(response, { error: "not_found" }, 404);
 });
-server.listen(port, "127.0.0.1", () => console.log(`Rovyniq API listening on ${port}`));
+const host = process.env.LISTEN_HOST ?? (process.env.K_SERVICE ? "0.0.0.0" : "127.0.0.1");
+server.listen(port, host, () => console.log(`Rovyniq API listening on ${host}:${port}`));
