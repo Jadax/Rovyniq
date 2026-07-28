@@ -14,7 +14,7 @@ Phase 1 foundation. OIDC/JWKS token verification plus hosted login and hosted re
 
 1. In ZITADEL, configure verified self-registration to grant only the base `taxpayer` role, then verify that each household user receives one secure Rovyniq workspace.
 2. Obtain legal/practitioner and production data-hosting approval before accepting any real documents.
-3. Configure PostgreSQL, encrypted storage and an isolated scanner, run reviewed migrations including `0003_identity_tenants.sql`, then enable and exercise document ingestion with synthetic PDFs before any household documents are accepted.
+3. Configure the private R2 bucket, encrypted storage secrets and Cloud Run ClamAV sidecar described in `docs/operations/CLOUD_RUN_CLAMAV_SIDECAR.md`; then exercise document ingestion with synthetic PDFs before any household documents are accepted.
 
 ## Decisions and risks
 
