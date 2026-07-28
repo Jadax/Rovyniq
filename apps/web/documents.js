@@ -7,12 +7,14 @@ const type = document.querySelector("#document-type");
 const uploadButton = document.querySelector("#upload-button");
 const list = document.querySelector("#document-list");
 const count = document.querySelector("#document-count");
+const signOut = document.querySelector("#sign-out");
 const workspace = new URLSearchParams(location.search).get("workspace");
 
 const documentLabels = { IRP5_IT3A: "Employment certificate", IT3B: "Interest certificate", MEDICAL_CERTIFICATE: "Medical certificate", OTHER: "Supporting document" };
 const stateLabels = { VALIDATED: "Validated", QUARANTINED: "Checking", ARCHIVED: "Needs attention" };
 
 chooseFile.addEventListener("click", () => file.click());
+signOut.addEventListener("click", async () => { signOut.disabled = true; await fetch("/v1/auth/signout", { method: "POST", credentials: "same-origin" }); location.assign("/"); });
 file.addEventListener("change", () => { name.textContent = file.files?.[0]?.name ?? "No file selected"; });
 
 function validWorkspace() { return /^[0-9a-f-]{36}$/i.test(workspace ?? ""); }
