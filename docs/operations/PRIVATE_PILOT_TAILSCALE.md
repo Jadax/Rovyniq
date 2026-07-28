@@ -13,13 +13,13 @@ This is a private, no-Docker pilot for the account owner and their invited house
 
 1. Install Node.js 24 or later and Tailscale on the Windows host. Invite the second household user to the tailnet with their own identity.
 2. In the Tailscale admin console, enable MagicDNS and HTTPS only after giving the device a non-identifying name such as `tax-pilot`.
-3. Create a local `.env` from `.env.example`. Do not commit it or share its values.
+3. Create a local `.env` from `.env.example`. Do not commit it or share its values. Set `NODE_ENV=production` and `PORT=3001` in that local file.
 4. Configure the browser callback using the final Tailscale HTTPS hostname: `https://tax-pilot.<tailnet>.ts.net/v1/auth/callback`. Register the exact same value in ZITADEL and set the matching post-logout URL to `https://tax-pilot.<tailnet>.ts.net/app`.
 5. Set `NODE_ENV=production`, `PORT=3001`, and all OIDC settings. Use ZITADEL's HTTPS issuer, OAuth v2 authorization/token endpoints, and JWKS endpoint. Set `OIDC_AUDIENCE` to the Web application's client ID and request the ZITADEL project-role scope from `.env.example`.
 
 ## Start and expose privately
 
-Run the API from the repository root, then in an Administrator PowerShell window run Tailscale Serve with a localhost target. Tailscale must report an `https://tax-pilot.<tailnet>.ts.net` URL that is available **within your tailnet**. Confirm the status before signing in.
+From the repository root, run `npm.cmd run start:pilot`. In an Administrator PowerShell window, run `tailscale serve --bg 3001`. Tailscale must report an `https://tax-pilot.<tailnet>.ts.net` URL that is available **within your tailnet**. Confirm the status before signing in.
 
 The private pilot is only ready to accept documents after PostgreSQL, envelope-encrypted object storage, and the isolated scanner are configured. Until then the document endpoint intentionally fails closed with `503`.
 
