@@ -9,6 +9,7 @@ import { PostgresDocumentPersistence, PostgresTenantDatabase, PostgresWorkspaceA
 import { IdentityWorkspaceOnboarding } from "./identity-onboarding.ts";
 import { requirePermission } from "../../../packages/authz/src/index.ts";
 import { serveStaticSite } from "./static-site.ts";
+import { itr12Interview } from "./itr12-interview.ts";
 
 const port = Number(process.env.PORT ?? 3001);
 const json = (response: import("node:http").ServerResponse, body: object, status = 200, headers: Record<string, string> = {}) => {
@@ -25,6 +26,7 @@ const onboarding = tenantDatabase && Number.isInteger(assessmentYear) && assessm
 const server = createServer((request, response) => {
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
   if (request.method === "GET" && url.pathname === "/health") return json(response, { service: "rovyniq-api", status: "ok" });
+  if (request.method === "GET" && url.pathname === "/v1/itr12/interview") return json(response, { questions: itr12Interview });
 
   if (request.method === "GET" && url.pathname === "/v1/auth/start") {
     try {
