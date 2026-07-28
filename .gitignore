@@ -3,6 +3,7 @@ dist/
 .env
 .env.*
 !/.env.example
+!/.env.pilot.example
 coverage/
 uploads/
 *.pem

@@ -13,7 +13,7 @@ This is a private, no-Docker pilot for the account owner and their invited house
 
 1. Install Node.js 24 or later and Tailscale on the Windows host. Invite the second household user to the tailnet with their own identity.
 2. In the Tailscale admin console, enable MagicDNS and HTTPS only after giving the device a non-identifying name such as `tax-pilot`.
-3. Create a local `.env` from `.env.example`. Do not commit it or share its values. Set `NODE_ENV=production` and `PORT=3001` in that local file.
+3. Create a local `.env` from `.env.pilot.example`, not from `.env.example`. This keeps storage and scanner settings absent, so document uploads fail closed. Do not commit it or share its values.
 4. Configure the browser callback using the final Tailscale HTTPS hostname: `https://tax-pilot.<tailnet>.ts.net/v1/auth/callback`. Register the exact same value in ZITADEL and set the matching post-logout URL to `https://tax-pilot.<tailnet>.ts.net/app`.
 5. Set `NODE_ENV=production`, `PORT=3001`, and all OIDC settings. Use ZITADEL's HTTPS issuer, OAuth v2 authorization/token endpoints, and JWKS endpoint. Set `OIDC_AUDIENCE` to the Web application's client ID and request the ZITADEL project-role scope from `.env.example`.
 
