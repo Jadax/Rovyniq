@@ -1,6 +1,13 @@
 const status = document.querySelector("#account-status");
 const link = document.querySelector("#documents-link");
 const list = document.querySelector("#document-list");
+const signOut = document.querySelector("#sign-out");
+
+signOut.addEventListener("click", async () => {
+  signOut.disabled = true;
+  await fetch("/v1/auth/signout", { method: "POST", credentials: "same-origin" });
+  location.assign("/");
+});
 
 link.setAttribute("aria-disabled", "true");
 link.href = "#";
