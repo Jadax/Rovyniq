@@ -1,4 +1,4 @@
-import { sections } from "../../packages/interview-engine/src/index.ts";
+import { sections } from "./sections.js";
 import { PdfExtractor } from "./pdf-extract.js";
 
 const SIGN_OUT_BTN = "#sign-out";
