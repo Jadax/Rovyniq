@@ -15,8 +15,8 @@ Rovyniq accepts a document only after it has passed a malware scan. For the earl
 2. Under **Containers**, keep the existing Rovyniq API container as the first container with port `8080`.
 3. Choose **Add container** and add the reviewed ClamAV image. Name it `clamav`; configure container port `3310`.
 4. Give the ClamAV container no environment variables, no secret mappings and no mounted volumes. It must not inherit the API container's configuration.
-5. Set a TCP startup probe on port `3310`. Use an initial delay of 20 seconds, a 5-second period, a 5-second timeout and a failure threshold of 12 to allow signature loading on a cold start.
-6. Give the sidecar a minimum of 1 CPU and 1 GiB memory. Keep the Cloud Run service on request-based billing, minimum instances `0`, and a small maximum instance count for the private pilot.
+5. Set a TCP startup probe on port `3310`. Use an initial delay of 30 seconds, a 10-second period, a 10-second timeout and a failure threshold of 60. The first signature download on a new scale-to-zero instance can take several minutes.
+6. Give the sidecar a minimum of 1 CPU and 3 GiB memory. ClamAV's current guidance is 3–4 GiB for the standard signature database. Keep the Cloud Run service on request-based billing, minimum instances `0`, and a small maximum instance count for the private pilot.
 7. Add these ordinary environment variables to the **Rovyniq API container only**:
 
    - `CLAMAV_HOST=127.0.0.1`
