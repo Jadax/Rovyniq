@@ -30,88 +30,61 @@ export class PdfExtractor {
 
   extractIrp5(text) {
     const fields = {};
+    const lines = text.split("\n").filter(Boolean);
 
     const employerMatch = text.match(/(?:employer|fund)\s*(?::|–|-)?\s*([A-Za-z0-9&.\s(##)]+?)(?:\s+(?:certificate|paye|employer|period|directive|\d{20,}))/i);
     if (employerMatch) fields.employer_name = employerMatch[1].trim();
+    else {
+      for (const line of lines) {
+        const m = line.match(/^([A-Z][A-Za-z0-9&.\s]{3,60})$/);
+        if (m && !m[1].match(/^\d/) && m[1].length > 5) {
+          fields.employer_name = m[1].trim();
+          break;
+        }
+      }
+    }
 
-    const certNumberMatch = text.match(/\b(\d{20,30})\b/);
-    if (certNumberMatch) fields.certificate_number = certNumberMatch[1];
+    const certNumMatch = text.match(/\b(\d{20,30})\b/);
+    if (certNumMatch) fields.certificate_number = certNumMatch[1];
 
     const payeMatch = text.match(/\b(7\d{9})\b/);
     if (payeMatch) fields.paye_reference = payeMatch[1];
 
-    const codePattern = /(\d+[\s,.]*\d*(?:\.\d+)?)\s*(?:source\s*code\s*)?(3\d{3})/gi;
-    const incomeCodes = [];
-    let m;
-    while ((m = codePattern.exec(text)) !== null) {
-      const amount = parseFloat(m[1].replace(/[\s,]/g, ""));
-      const code = m[2];
-      if (!isNaN(amount) && code !== "3696" && code !== "3699") {
-        incomeCodes.push({ code, amount });
-      }
+    fields.income_salary = this._extractCodeAmount(text, "3601");
+    fields.income_non_taxable = this._extractCodeAmount(text, "3602");
+    fields.income_pension = this._extractCodeAmount(text, "3603");
+    fields.income_annual_payment = this._extractCodeAmount(text, "3605");
+
+    const total3699 = this._extractCodeAmount(text, "3699");
+    if (total3699) fields.gross_income = total3699;
+
+    fields.paye_deducted = this._extractCodeAmount(text, "4102");
+    fields.uif_deducted = this._extractCodeAmount(text, "4141");
+    fields.sdl_deducted = this._extractCodeAmount(text, "4142");
+    fields.medical_credit_on_irp5 = this._extractCodeAmount(text, "4116");
+    fields.retirement_fund_contrib = this._extractCodeAmount(text, "4001") || this._extractCodeAmount(text, "4005");
+
+    const contrib4005 = this._extractCodeAmount(text, "4005");
+    const contrib4001 = this._extractCodeAmount(text, "4001");
+    if (contrib4005 && contrib4001) {
+      fields.retirement_fund_contrib = contrib4005 + contrib4001;
     }
 
-    const incomeLinePattern = /(\d[\d,.\s]*\d)\s+(3\d{3})/g;
-    while ((m = incomeLinePattern.exec(text)) !== null) {
-      const amount = parseFloat(m[1].replace(/[\s,]/g, ""));
-      const code = m[2];
-      if (!isNaN(amount) && code !== "3696" && code !== "3699" && !incomeCodes.some((c) => c.code === code)) {
-        incomeCodes.push({ code, amount });
-      }
-    }
-    if (incomeCodes.length) fields.income_codes = incomeCodes;
-
-    const code3696Match = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?3696/);
-    if (code3696Match) fields.non_taxable_income = parseFloat(code3696Match[1].replace(/[\s,]/g, ""));
-
-    const code3699Match = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?3699/);
-    if (code3699Match) fields.gross_employment_income = parseFloat(code3699Match[1].replace(/[\s,]/g, ""));
-
-    const deductionLinePattern = /(\d[\d,.\s]*\d)\s+(4\d{3})/g;
-    const deductions = [];
-    while ((m = deductionLinePattern.exec(text)) !== null) {
-      const amount = parseFloat(m[1].replace(/[\s,]/g, ""));
-      const code = m[2];
-      if (!isNaN(amount) && !["4102","4141","4142","4149","4116"].includes(code)) {
-        deductions.push({ code, amount });
-      }
-    }
-    if (deductions.length) fields.deduction_codes = deductions;
-
-    const payeMatch2 = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4102/);
-    if (payeMatch2) fields.paye_amount = parseFloat(payeMatch2[1].replace(/[\s,]/g, ""));
-
-    const uifMatch = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4141/);
-    if (uifMatch) fields.uif_contribution = parseFloat(uifMatch[1].replace(/[\s,]/g, ""));
-
-    const sdlMatch = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4142/);
-    if (sdlMatch) fields.sdl_contribution = parseFloat(sdlMatch[1].replace(/[\s,]/g, ""));
-
-    const totalTaxMatch = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4149/);
-    if (totalTaxMatch) fields.total_tax_sdl_uif = parseFloat(totalTaxMatch[1].replace(/[\s,]/g, ""));
-
-    const medicalCreditMatch = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4116/);
-    if (medicalCreditMatch) fields.medical_tax_credit = parseFloat(medicalCreditMatch[1].replace(/[\s,]/g, ""));
-
-    const code4120Match = text.match(/(\d[\d,.\s]*\d)\s*(?:source\s*code\s*)?4120/);
-    if (code4120Match) fields.source_code_4120 = parseFloat(code4120Match[1].replace(/[\s,]/g, ""));
-
-    const periodsMatch = text.match(/(?:periods?\s*in\s*(?:year|assessment|tax\s*year)|assessment\s*year\s*periods)\s*:?\s*(\d+)/i);
-    if (periodsMatch) fields.periods_in_year = parseInt(periodsMatch[1], 10);
-
-    const periodsWorkedMatch = text.match(/(?:periods?\s*worked|number\s*of\s*periods?\s*worked)\s*:?\s*(\d+)/i);
-    if (periodsWorkedMatch) fields.periods_worked = parseInt(periodsWorkedMatch[1], 10);
+    const periodsMatch = text.match(/(?:periods?\s*(?:in\s*)?(?:year|assessment|tax\s*year)|assessment\s*year\s*periods)\s*:?\s*(\d+)/i);
+    if (periodsMatch) fields.periods_employed = parseInt(periodsMatch[1], 10);
 
     const datePattern = /(\d{2}\/\d{2}\/\d{4})/g;
     const dates = text.match(datePattern);
     if (dates) {
-      const validDates = dates.filter((d) => {
+      const valid = dates.filter((d) => {
         const [dd, mm, yyyy] = d.split("/").map(Number);
         return yyyy >= 2025 && yyyy <= 2026 && mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
       }).sort();
-      if (validDates.length >= 2) {
-        fields.start_date = validDates[0];
-        fields.end_date = validDates[validDates.length - 1];
+      if (valid.length >= 2) {
+        fields.start_date = valid[0];
+        fields.end_date = valid[valid.length - 1];
+      } else if (valid.length === 1) {
+        fields.start_date = valid[0];
       }
     }
 
@@ -135,16 +108,16 @@ export class PdfExtractor {
     ];
     for (const { pattern, value } of schemeNames) {
       if (pattern.test(text)) {
-        fields.medical_scheme_name = value;
+        fields.scheme_name = value;
         break;
       }
     }
 
     const memberNoMatch = text.match(/(?:membership\s*(?:no|number|#|id)|member\s*number|policy\s*number)\s*:?\s*([A-Za-z0-9-]+)/i);
-    if (memberNoMatch) fields.medical_membership_number = memberNoMatch[1];
+    if (memberNoMatch) fields.membership_number = memberNoMatch[1];
 
-    const contributionMatch = text.match(/(?:contribution|total\s*contribution|annual\s*contribution)\s*:?\s*R?\s*([\d,.\s]+)/i);
-    if (contributionMatch) fields.medical_contributions = parseFloat(contributionMatch[1].replace(/[\s,]/g, ""));
+    const contribMatch = text.match(/(?:contribution|total\s*contribution|annual\s*contribution)\s*:?\s*R?\s*([\d,.\s]+)/i);
+    if (contribMatch) fields.total_contributions_paid = parseFloat(contribMatch[1].replace(/[\s,]/g, ""));
 
     return fields;
   }
@@ -164,27 +137,37 @@ export class PdfExtractor {
     ];
     for (const { pattern, value } of institutionPatterns) {
       if (pattern.test(text)) {
-        fields.tfsa_institution = value;
+        fields.institution_name = value;
         break;
       }
     }
 
     const policyMatch = text.match(/(?:policy|account|membership)\s*(?:no|number|#|id)\s*:?\s*([A-Za-z0-9-]+)/i);
-    if (policyMatch) fields.tfsa_policy_number = policyMatch[1];
+    if (policyMatch) fields.account_number = policyMatch[1];
 
-    const contribMatch = text.match(/(?:source\s*code\s*)?4219\s*:?\s*R?\s*([\d,.\s]+)/i);
-    if (contribMatch) fields.tfsa_total_contributions = parseFloat(contribMatch[1].replace(/[\s,]/g, ""));
-
-    const interestMatch = text.match(/(?:source\s*code\s*)?4241\s*:?\s*R?\s*([\d,.\s]+)/i);
-    if (interestMatch) fields.tfsa_interest_earned = parseFloat(interestMatch[1].replace(/[\s,]/g, ""));
-
-    const dividendMatch = text.match(/(?:source\s*code\s*)?4242\s*:?\s*R?\s*([\d,.\s]+)/i);
-    if (dividendMatch) fields.tfsa_dividends_earned = parseFloat(dividendMatch[1].replace(/[\s,]/g, ""));
-
-    const withdrawalMatch = text.match(/(?:source\s*code\s*)?4248\s*:?\s*R?\s*([\d,.\s]+)/i);
-    if (withdrawalMatch) fields.tfsa_withdrawal = parseFloat(withdrawalMatch[1].replace(/[\s,]/g, ""));
+    fields.total_contributions = this._extractCodeAmount(text, "4219");
+    fields.interest_earned = this._extractCodeAmount(text, "4241");
+    fields.dividends_earned = this._extractCodeAmount(text, "4242");
+    fields.withdrawals = this._extractCodeAmount(text, "4248");
 
     return fields;
+  }
+
+  _extractCodeAmount(text, code) {
+    const patterns = [
+      new RegExp(`(?:source\\s*code\\s*)?${code}\\s*:?\\s*R?\\s*([\\d,.\s]+?)(?:\\s|$|\\n|code|source)`, "i"),
+      new RegExp(`([\\d,.\s]+)\\s*(?:source\\s*code\\s*)?${code}(?!\\d)`, "i"),
+      new RegExp(`\\b${code}\\b\\s*:?\\s*R?\\s*([\\d,.\s]+?)(?:\\s|$|\\n)`, "i")
+    ];
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match) {
+        const cleaned = match[1].replace(/[\s,]/g, "");
+        const num = parseFloat(cleaned);
+        if (!isNaN(num) && num > 0) return num;
+      }
+    }
+    return null;
   }
 
   async extractFromPdf(file, docType) {

@@ -464,6 +464,10 @@ function renderInstanceFields(section, instance) {
         inputHtml = `<input class="${inputClass}" type="text" data-key="${fullKey}" value="${val}" placeholder="${field.placeholder ?? "DD/MM/YYYY"}">`;
         break;
       }
+      case "info": {
+        inputHtml = `<div style="background:#edf5ef;border-left:3px solid #168a68;border-radius:6px;padding:.75rem .9rem;font-size:.82rem;line-height:1.5;color:var(--ink)">${field.text}</div>`;
+        break;
+      }
       case "codes": {
         const val = currentValue ? (typeof currentValue === "object" ? JSON.stringify(currentValue) : currentValue) : "";
         inputHtml = `<textarea class="${inputClass}" data-key="${fullKey}" rows="3" placeholder="${field.placeholder ?? "e.g. 708333 3601"}">${val}</textarea>
