@@ -57,7 +57,7 @@ const server = createServer((request, response) => {
         const principal = await exchangeCodeForPrincipal(code, stored.verifier, configuration, jwks);
         const session = await createSessionCookie(principal, configuration.cookieSecret, secureCookies);
         response.writeHead(302, { location: stored.returnTo, "set-cookie": [session, browserCookies.clearTransient(secureCookies)], "cache-control": "no-store" }); response.end();
-      }).catch(() => json(response, { error: "authentication_failed" }, 401));
+      }).catch((error) => { console.warn("OIDC callback failed:", error instanceof Error ? error.message : "unknown error"); json(response, { error: "authentication_failed" }, 401); });
     } catch { json(response, { error: "authentication_failed" }, 401); }
     return;
   }
