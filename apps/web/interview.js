@@ -236,7 +236,7 @@ function renderCurrentSection() {
     renderFields(section);
   } else {
     gatePanel.hidden = true;
-    fieldsPanel.hidden = true;
+    fieldsPanel.hidden = false;
     renderNextNav(section, false);
   }
 }
@@ -248,6 +248,7 @@ function renderGate(section) {
   const q = section.gateQuestion;
   const idx = sections.findIndex((s) => s.id === section.id);
   const answered = getAnswer(gateKey(section.id));
+  const canExtract = ["employment", "medical", "tax_free_savings"].includes(section.id);
 
   panel.innerHTML = `
     <div class="section-badge">
@@ -255,13 +256,14 @@ function renderGate(section) {
       <span>${section.title}</span>
       <span class="badge-num">section ${idx + 1} of ${sections.length}</span>
     </div>
-    <h2>${q.text.split("?")[0]}?</h2>
+    <h2>${q.text.includes("?") ? q.text : q.text + "?"}</h2>
     <p class="gate-desc">${q.text}</p>
     ${q.helpText ? `<div class="gate-help"><strong>Tip:</strong> ${q.helpText}</div>` : ""}
     <div class="gate-actions">
       <button class="gate-btn yes ${answered === true || answered === "yes" ? "selected" : ""}" data-value="yes">Yes</button>
       <button class="gate-btn no ${answered === false || answered === "no" ? "selected" : ""}" data-value="no">No</button>
     </div>
+    ${canExtract ? `
     <div class="upload-mini" id="upload-mini">
       <h3>Have a tax certificate? Upload it to auto-fill</h3>
       <p>Rovyniq can read IRP5, medical and TFSA certificates and fill in the fields automatically.</p>
@@ -270,7 +272,7 @@ function renderGate(section) {
         <input id="mini-upload-input" type="file" accept="application/pdf,.pdf" hidden>
         <span id="mini-upload-status" class="mini-status">No file selected</span>
       </div>
-    </div>
+    </div>` : ""}
   `;
 
   panel.querySelectorAll(".gate-btn").forEach((btn) => {
