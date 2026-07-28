@@ -10,4 +10,12 @@ export const itr12Interview: readonly InterviewQuestion[] = [
   { key: "has_capital_gains", section: "Capital gains", prompt: "Did you sell investments, cryptocurrency, property, or another capital asset?", kind: "yes_no", evidenceTypes: ["IT3C"] },
   { key: "has_other_income", section: "Other income", prompt: "Did you earn rental, freelance, business, trust, or foreign income?", kind: "yes_no" },
   { key: "has_donations", section: "Deductions", prompt: "Do you have a qualifying donation certificate from an approved public-benefit organisation?", kind: "yes_no" }
+  ,{ key: "has_travel_allowance", section: "Travel", prompt: "Did your employer provide a travel allowance and do you have a logbook?", kind: "yes_no" }
+  ,{ key: "has_home_office", section: "Deductions", prompt: "Do you have evidence for qualifying home-office or other employment expenses?", kind: "yes_no" }
+  ,{ key: "has_trust_income", section: "Other income", prompt: "Did income vest in you as a beneficiary of a trust?", kind: "yes_no" }
+  ,{ key: "has_exempt_income", section: "Exempt income", prompt: "Did you receive income that may be exempt from normal tax?", kind: "yes_no" }
+  ,{ key: "has_foreign_income", section: "Foreign income", prompt: "Did you earn foreign income or pay foreign tax?", kind: "yes_no" }
+  ,{ key: "has_business_income", section: "Business and freelance", prompt: "Were you self-employed, an independent contractor, or a director/member of a private entity?", kind: "yes_no" }
+  ,{ key: "married_in_community", section: "Personal details", prompt: "Were you married in community of property during the assessment year?", kind: "yes_no" }
+  ,{ key: "has_unemployment_period", section: "Employment", prompt: "Were you unemployed for any part of the assessment year?", kind: "yes_no" }
 ];
